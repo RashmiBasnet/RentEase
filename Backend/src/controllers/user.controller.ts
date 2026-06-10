@@ -10,9 +10,7 @@ interface AuthenticatedRequest extends Request {
         _id?: unknown;
         id?: unknown;
     };
-    file?: {
-        filename: string;
-    };
+    file?: Express.Multer.File;
 }
 
 export class UserController {
