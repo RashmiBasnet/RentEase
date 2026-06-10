@@ -11,7 +11,7 @@ export const VehicleSchema = z.object({
     description: z.string().trim().min(10, "Description must be at least 10 characters"),
     type: z.enum(["car", "bike", "scooter", "suv", "van"]),
     brand: z.string().trim().min(1, "Brand is required"),
-    VehicleModel: z.string().trim().min(1, "Model is required"),
+    vehicleModel: z.string().trim().min(1, "Model is required"),
     year: z.number().int().min(1990).max(new Date().getFullYear()),
     registrationNumber: z.string().trim().min(1, "Registration number is required"),
     fuelType: z.enum(["petrol", "diesel", "electric", "hybrid"]),
