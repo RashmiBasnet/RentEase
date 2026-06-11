@@ -1,8 +1,8 @@
 import z from "zod";
-import { BookingSchema } from "../types/booking.type";
+import { BookingObjectSchema } from "../types/booking.type";
 
 // User provides only these — server computes userId, totalDays, basePrice, totalAmount
-export const CreateBookingDto = BookingSchema.pick({
+export const CreateBookingDto = BookingObjectSchema.pick({
     vehicleId: true,
     startDate: true,
     endDate: true,
@@ -16,13 +16,13 @@ export const CreateBookingDto = BookingSchema.pick({
 export type CreateBookingDto = z.infer<typeof CreateBookingDto>;
 
 // Admin updates booking status (confirm, activate, complete, cancel)
-export const UpdateBookingStatusDto = BookingSchema.pick({
+export const UpdateBookingStatusDto = BookingObjectSchema.pick({
     status: true,
 });
 export type UpdateBookingStatusDto = z.infer<typeof UpdateBookingStatusDto>;
 
 // Admin updates payment status
-export const UpdatePaymentStatusDto = BookingSchema.pick({
+export const UpdatePaymentStatusDto = BookingObjectSchema.pick({
     paymentStatus: true,
 });
 export type UpdatePaymentStatusDto = z.infer<typeof UpdatePaymentStatusDto>;

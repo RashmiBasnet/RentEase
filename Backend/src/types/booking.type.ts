@@ -5,7 +5,7 @@ const ExtraChargeSchema = z.object({
     amount: z.number().nonnegative("Amount must be non-negative"),
 });
 
-export const BookingSchema = z.object({
+export const BookingObjectSchema = z.object({
     userId: z.string().trim().min(1, "User ID is required"),
     vehicleId: z.string().trim().min(1, "Vehicle ID is required"),
     startDate: z.coerce.date(),
@@ -21,7 +21,9 @@ export const BookingSchema = z.object({
     paymentStatus: z.enum(["pending", "paid", "refunded"]).default("pending"),
     paymentMethod: z.string().trim().optional(),
     notes: z.string().trim().optional(),
-}).refine(
+});
+
+export const BookingSchema = BookingObjectSchema.refine(
     (data) => data.endDate > data.startDate,
     { message: "End date must be after start date", path: ["endDate"] }
 );
