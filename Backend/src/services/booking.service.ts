@@ -147,7 +147,6 @@ export class BookingService {
             );
         }
 
-        // Users can only cancel their own pending bookings
         if (requesterRole !== "admin") {
             const bookingUserId =
                 (booking.userId as any)?._id?.toString() ?? booking.userId?.toString();

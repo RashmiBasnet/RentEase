@@ -56,7 +56,6 @@ export class AuthService {
         }
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
         const resetLink = `${CLIENT_URL}/reset-password?token=${token}`;
-        // TODO: wire up email service and send resetLink
         return user;
     }
 

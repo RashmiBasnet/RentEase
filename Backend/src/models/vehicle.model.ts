@@ -23,7 +23,6 @@ const VehicleSchema: Schema = new Schema(
                 enum: ["Point"],
                 default: "Point",
             },
-            // GeoJSON format: [longitude, latitude]
             coordinates: {
                 type: [Number],
                 required: true,

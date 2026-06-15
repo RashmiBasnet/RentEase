@@ -1,7 +1,6 @@
 import z from "zod";
 import { ReportSchema } from "../types/report.type";
 
-// User provides these — server computes reportedBy from token
 export const CreateReportDto = ReportSchema.pick({
     vehicleId: true,
     reason: true,
@@ -9,7 +8,6 @@ export const CreateReportDto = ReportSchema.pick({
 });
 export type CreateReportDto = z.infer<typeof CreateReportDto>;
 
-// Admin updates the status of a report
 export const UpdateReportStatusDto = ReportSchema.pick({
     status: true,
 });
