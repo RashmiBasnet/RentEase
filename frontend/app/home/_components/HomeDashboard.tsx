@@ -15,7 +15,9 @@ const API_BASE =
 function resolveImage(src?: string) {
   if (!src) return undefined;
   if (/^https?:\/\//.test(src)) return src;
-  return `${API_BASE}/${src.replace(/^\/+/, "")}`;
+  const cleanSrc = src.replace(/^\/+/, "");
+  const path = cleanSrc.startsWith("uploads/") ? cleanSrc : `uploads/${cleanSrc}`;
+  return `${API_BASE}/${path}`;
 }
 
 const capitalize = (s?: string) =>

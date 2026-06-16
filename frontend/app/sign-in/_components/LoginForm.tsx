@@ -35,7 +35,7 @@ export function LoginForm() {
     setServerError(null);
     const res = await handleLogin(values);
     if (res.success) {
-      router.push("/home");
+      router.push(res.data?.user?.role === "admin" ? "/admin" : "/home");
       router.refresh();
       return;
     }

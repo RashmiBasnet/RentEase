@@ -8,7 +8,21 @@ const AUTH_ONLY = [
   "/history",
   "/locations",
   "/account",
+  "/admin",
 ];
+
+// Routes that require the "admin" role.
+const ADMIN_ONLY = ["/admin"];
+
+function readRole(request: NextRequest): string | null {
+  const raw = request.cookies.get("user_data")?.value;
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw)?.role ?? null;
+  } catch {
+    return null;
+  }
+}
 
 // Routes that only make sense when logged OUT.
 const GUEST_ONLY = ["/sign-in"];
@@ -38,6 +52,14 @@ export function proxy(request: NextRequest) {
     const url = new URL("/sign-in", request.url);
     url.searchParams.set("redirect", pathname);
     return NextResponse.redirect(url);
+  }
+
+  // Admin routes are reserved for admins — bounce everyone else to their dashboard.
+  const isAdminRoute = ADMIN_ONLY.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`)
+  );
+  if (isAuthed && isAdminRoute && readRole(request) !== "admin") {
+    return NextResponse.redirect(new URL("/home", request.url));
   }
 
   return NextResponse.next();

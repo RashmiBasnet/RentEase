@@ -29,6 +29,8 @@ export type CreateVehiclePayload = {
 };
 
 export type UpdateVehiclePayload = Partial<CreateVehiclePayload>;
+export type VehicleWritePayload = CreateVehiclePayload | FormData;
+type VehicleRequestPayload = CreateVehiclePayload | UpdateVehiclePayload | FormData;
 
 // Reuse the filter/query param shapes defined in endpoints.ts
 export type VehicleFilterParams = Parameters<typeof API.VEHICLE.GET_ALL>[0];
@@ -79,11 +81,15 @@ export const getVehicleById = async (id: string) => {
     }
 }
 
-export const createVehicle = async (data: CreateVehiclePayload) => {
+const multipartHeaders = (data: VehicleRequestPayload) =>
+    data instanceof FormData ? { "Content-Type": "multipart/form-data" } : undefined;
+
+export const createVehicle = async (data: VehicleWritePayload) => {
     try {
         const response = await axios.post(
             API.VEHICLE.CREATE,
-            data
+            data,
+            { headers: multipartHeaders(data) }
         );
         return response.data;
     } catch (err: Error | any) {
@@ -95,11 +101,12 @@ export const createVehicle = async (data: CreateVehiclePayload) => {
     }
 }
 
-export const updateVehicle = async (id: string, data: UpdateVehiclePayload) => {
+export const updateVehicle = async (id: string, data: UpdateVehiclePayload | FormData) => {
     try {
         const response = await axios.patch(
             API.VEHICLE.UPDATE(id),
-            data
+            data,
+            { headers: multipartHeaders(data) }
         );
         return response.data;
     } catch (err: Error | any) {

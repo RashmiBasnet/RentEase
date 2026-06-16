@@ -9,8 +9,8 @@ import {
     toggleVehicleAvailability,
     toggleVehicleVerification,
     updateVehicle,
-    type CreateVehiclePayload,
     type UpdateVehiclePayload,
+    type VehicleWritePayload,
     type VehicleFilterParams,
     type VehicleNearParams,
 } from "../api/vehicle/vehicle";
@@ -51,7 +51,7 @@ export const handleGetVehicleById = async (id: string) => {
     }
 }
 
-export const handleCreateVehicle = async (formData: CreateVehiclePayload) => {
+export const handleCreateVehicle = async (formData: VehicleWritePayload) => {
     try {
         const result = await createVehicle(formData);
         if (result.success) {
@@ -63,7 +63,7 @@ export const handleCreateVehicle = async (formData: CreateVehiclePayload) => {
     }
 }
 
-export const handleUpdateVehicle = async (id: string, formData: UpdateVehiclePayload) => {
+export const handleUpdateVehicle = async (id: string, formData: UpdateVehiclePayload | FormData) => {
     try {
         const result = await updateVehicle(id, formData);
         if (result.success) {

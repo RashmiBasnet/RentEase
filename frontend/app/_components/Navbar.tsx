@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, X } from "lucide-react";
+import { LogOut, Menu, Search, X } from "lucide-react";
 import { useState } from "react";
-import { Avatar } from "./Avatar";
+import { useRouter } from "next/navigation";
+import { AccountMenu } from "./AccountMenu";
 import { Button } from "./Button";
 import { Logo } from "./Logo";
 import { cn } from "./cn";
+import { handleLogout } from "@/lib/actions/auth-action";
 
 type NavLink = { label: string; href: string };
 
@@ -66,7 +68,15 @@ export function Navbar({
   className,
 }: NavbarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+
+  const onLogout = async () => {
+    setOpen(false);
+    await handleLogout();
+    router.push("/sign-in");
+    router.refresh();
+  };
 
   return (
     <header
@@ -98,9 +108,7 @@ export function Navbar({
 
         <div className="ml-auto flex items-center gap-3 lg:ml-0">
           {user ? (
-            <Link href="/account" className="no-underline">
-              <Avatar name={user.name} src={user.avatarUrl} showName />
-            </Link>
+            <AccountMenu name={user.name} avatarUrl={user.avatarUrl} />
           ) : (
             <Button href="/sign-in" size="sm" className="hidden sm:inline-flex">
               Sign In
@@ -131,7 +139,16 @@ export function Navbar({
               onClick={() => setOpen(false)}
             />
           </nav>
-          {!user && (
+          {user ? (
+            <button
+              type="button"
+              onClick={onLogout}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--color-danger-soft-bg)] px-4 py-2.5 text-sm font-semibold text-[var(--color-danger-soft-text)]"
+            >
+              <LogOut size={17} />
+              Logout
+            </button>
+          ) : (
             <Button href="/sign-in" size="sm" fullWidth className="mt-4">
               Sign In
             </Button>
