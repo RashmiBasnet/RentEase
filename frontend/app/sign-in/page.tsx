@@ -2,120 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
-import {
-  AtSign,
-  Eye,
-  EyeOff,
-  LockKeyhole,
-  Phone,
-  ShieldCheck,
-  Star,
-  StarHalf,
-  User,
-} from "lucide-react";
-import { Button } from "../_components/Button";
+import { useState } from "react";
+import { ShieldCheck, Star, StarHalf } from "lucide-react";
+import { LoginForm } from "./_components/LoginForm";
+import { SignUpForm } from "./_components/SignUpForm";
 
 const travelers = [
   { name: "A", tone: "from-[#0f766e] to-[#39c6a2]" },
   { name: "V", tone: "from-[#2563eb] to-[#7dd3fc]" },
   { name: "S", tone: "from-[#c2410c] to-[#fbbf24]" },
 ];
-
-const fieldBox =
-  "flex items-stretch overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] transition-shadow duration-200 focus-within:border-[var(--color-primary)] focus-within:shadow-[var(--shadow-focus)]";
-const fieldInput =
-  "w-full bg-transparent py-3 pl-2 pr-4 text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)]";
-const fieldLabel = "text-sm font-medium text-[var(--color-text-secondary)]";
-
-type FieldProps = {
-  id: string;
-  label: string;
-  icon: ReactNode;
-  type?: string;
-  placeholder?: string;
-  autoComplete?: string;
-};
-
-function Field({
-  id,
-  label,
-  icon,
-  type = "text",
-  placeholder,
-  autoComplete,
-}: FieldProps) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className={fieldLabel}>
-        {label}
-      </label>
-      <div className={fieldBox}>
-        <span className="flex items-center pl-3 text-[var(--color-text-muted)]">
-          {icon}
-        </span>
-        <input
-          id={id}
-          name={id}
-          type={type}
-          placeholder={placeholder}
-          autoComplete={autoComplete}
-          className={fieldInput}
-        />
-      </div>
-    </div>
-  );
-}
-
-type PasswordFieldProps = {
-  id: string;
-  label: string;
-  placeholder?: string;
-  autoComplete?: string;
-
-  action?: ReactNode;
-};
-
-function PasswordField({
-  id,
-  label,
-  placeholder,
-  autoComplete,
-  action,
-}: PasswordFieldProps) {
-  const [show, setShow] = useState(false);
-  return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex items-center justify-between gap-4">
-        <label htmlFor={id} className={fieldLabel}>
-          {label}
-        </label>
-        {action}
-      </div>
-      <div className={fieldBox}>
-        <span className="flex items-center pl-3 text-[var(--color-text-muted)]">
-          <LockKeyhole size={18} />
-        </span>
-        <input
-          id={id}
-          name={id}
-          type={show ? "text" : "password"}
-          placeholder={placeholder}
-          autoComplete={autoComplete}
-          className="w-full bg-transparent py-3 pl-2 pr-2 text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)]"
-        />
-        <button
-          type="button"
-          onClick={() => setShow((v) => !v)}
-          aria-label={show ? "Hide password" : "Show password"}
-          className="flex items-center px-3 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
-        >
-          {show ? <Eye size={18} /> : <EyeOff size={18} />}
-        </button>
-      </div>
-    </div>
-  );
-}
 
 type Tab = "login" | "signup";
 
@@ -125,7 +21,7 @@ export default function SignInPage() {
 
   return (
     <main className="grid min-h-screen bg-[var(--color-surface-muted)] lg:grid-cols-[55%_45%]">
-
+      {/* Brand / hero panel */}
       <section className="relative isolate min-h-[420px] overflow-hidden bg-slate-950 text-white lg:min-h-screen">
         <Image
           src="/images/login_signup_image.png"
@@ -178,7 +74,7 @@ export default function SignInPage() {
         </div>
       </section>
 
-
+      {/* Form panel */}
       <section className="flex items-center justify-center px-6 py-12 sm:px-12 lg:px-16">
         <div className="w-full max-w-[360px]">
           <div>
@@ -192,7 +88,7 @@ export default function SignInPage() {
             </p>
           </div>
 
-
+          {/* Tabs */}
           <div className="mt-6 grid grid-cols-2 gap-1 rounded-lg bg-[var(--color-surface-inset)] p-1">
             {(["login", "signup"] as const).map((value) => (
               <button
@@ -210,71 +106,13 @@ export default function SignInPage() {
             ))}
           </div>
 
-          <form
-            className="mt-6 flex flex-col gap-4"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            {!isLogin && (
-              <>
-                <Field
-                  id="fullName"
-                  label="Full Name"
-                  icon={<User size={18} />}
-                  placeholder="Your full name"
-                  autoComplete="name"
-                />
-                <Field
-                  id="phone"
-                  label="Phone Number"
-                  type="tel"
-                  icon={<Phone size={18} />}
-                  placeholder="98XXXXXXXX"
-                  autoComplete="tel"
-                />
-              </>
-            )}
+          {isLogin ? (
+            <LoginForm />
+          ) : (
+            <SignUpForm onSuccess={() => setTab("login")} />
+          )}
 
-            <Field
-              id="email"
-              label="Email"
-              type="email"
-              icon={<AtSign size={18} />}
-              placeholder="you@example.com"
-              autoComplete="email"
-            />
-
-            <PasswordField
-              id="password"
-              label="Password"
-              placeholder="Enter your password"
-              autoComplete={isLogin ? "current-password" : "new-password"}
-              action={
-                isLogin ? (
-                  <Link
-                    href="/forgot-password"
-                    className="text-sm font-semibold text-[var(--color-primary)] no-underline hover:underline"
-                  >
-                    Forgot Password?
-                  </Link>
-                ) : undefined
-              }
-            />
-
-            {!isLogin && (
-              <PasswordField
-                id="confirmPassword"
-                label="Confirm Password"
-                placeholder="Re-enter your password"
-                autoComplete="new-password"
-              />
-            )}
-
-            <Button type="submit" size="lg" fullWidth className="mt-1">
-              {isLogin ? "Login" : "Create Account"}
-            </Button>
-          </form>
-
-
+          {/* Footer */}
           <div className="mt-8">
             <hr className="border-[var(--color-border)]" />
             <div className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs font-medium text-[var(--color-text-secondary)]">
