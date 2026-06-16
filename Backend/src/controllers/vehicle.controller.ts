@@ -9,10 +9,97 @@ type ControllerError = Error & { statusCode?: number };
 const getFirstZodMessage = (error: { issues: { message: string }[] }) =>
     error.issues[0]?.message || "Invalid request data";
 
+const parseJsonField = (value: unknown) => {
+    if (typeof value !== "string") return value;
+    try {
+        return JSON.parse(value);
+    } catch {
+        return value;
+    }
+};
+
+const parseStringArray = (value: unknown): string[] => {
+    const parsed = parseJsonField(value);
+    if (Array.isArray(parsed)) {
+        return parsed.map(String).map((item) => item.trim()).filter(Boolean);
+    }
+    if (typeof parsed === "string") {
+        return parsed
+            .split(/[\n,]/)
+            .map((item) => item.trim())
+            .filter(Boolean);
+    }
+    return [];
+};
+
+const parseNumber = (value: unknown) =>
+    value === undefined || value === "" ? undefined : Number(value);
+
+const parseVehiclePayload = (req: Request, isUpdate = false) => {
+    const body = req.body as Record<string, unknown>;
+    const files = Array.isArray(req.files) ? (req.files as Express.Multer.File[]) : [];
+    const uploadedImages = files.map((file) => file.filename);
+    const bodyImages = parseStringArray(body.images);
+    const imageUrls = parseStringArray(body.imageUrls);
+    const images = [...bodyImages, ...imageUrls, ...uploadedImages];
+
+    const rawLocation = parseJsonField(body.location);
+    const lng = parseNumber(body.lng);
+    const lat = parseNumber(body.lat);
+    const location =
+        rawLocation && typeof rawLocation === "object"
+            ? rawLocation
+            : lng !== undefined && lat !== undefined
+              ? { type: "Point", coordinates: [lng, lat] }
+              : undefined;
+
+    const rawInsurance = parseJsonField(body.insurance);
+    const insurance =
+        rawInsurance && typeof rawInsurance === "object"
+            ? rawInsurance
+            : undefined;
+
+    const payload: Record<string, unknown> = {
+        title: body.title,
+        description: body.description,
+        type: body.type,
+        brand: body.brand,
+        vehicleModel: body.vehicleModel,
+        year: parseNumber(body.year),
+        registrationNumber: body.registrationNumber,
+        fuelType: body.fuelType,
+        transmission: body.transmission,
+        seats: parseNumber(body.seats),
+        pricePerDay: parseNumber(body.pricePerDay),
+        deposit: parseNumber(body.deposit),
+        pickupAddress: body.pickupAddress,
+        location,
+        conditionRating: parseNumber(body.conditionRating),
+        conditionNotes: body.conditionNotes,
+        insurance,
+    };
+
+    if (body.features !== undefined) {
+        payload.features = parseStringArray(body.features);
+    }
+
+    if (images.length > 0) {
+        payload.images = images;
+    }
+
+    Object.keys(payload).forEach((key) => {
+        if (payload[key] === undefined || (isUpdate && payload[key] === "")) {
+            delete payload[key];
+        }
+    });
+
+    return payload;
+};
+
 export class VehicleController {
     async createVehicle(req: Request, res: Response) {
         try {
-            const parsedData = CreateVehicleDto.safeParse(req.body);
+            const parsedData = CreateVehicleDto.safeParse(parseVehiclePayload(req));
             if (!parsedData.success) {
                 return res.status(400).json({
                     success: false,
@@ -87,7 +174,7 @@ export class VehicleController {
     async updateVehicle(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const parsedData = UpdateVehicleDto.safeParse(req.body);
+            const parsedData = UpdateVehicleDto.safeParse(parseVehiclePayload(req, true));
             if (!parsedData.success) {
                 return res.status(400).json({
                     success: false,
