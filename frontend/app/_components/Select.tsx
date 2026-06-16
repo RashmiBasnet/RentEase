@@ -52,7 +52,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             aria-invalid={!!error}
             className={cn(
               "w-full appearance-none bg-transparent py-3 pl-4 pr-10 text-[var(--color-text)] outline-none",
-              leftIcon && "pl-2",
+              leftIcon ? "pl-2" : undefined,
               className
             )}
             {...props}

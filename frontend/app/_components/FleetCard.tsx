@@ -47,7 +47,13 @@ export function FleetCard({
     >
       <div className="relative aspect-[16/11] w-full">
         {imageUrl ? (
-          <Image src={imageUrl} alt={name} fill className="object-cover" />
+          <Image
+            src={imageUrl}
+            alt={name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover"
+          />
         ) : (
           <div
             className={cn(
@@ -70,13 +76,13 @@ export function FleetCard({
 
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-base font-bold leading-snug text-[var(--color-text)]">
+          <h3 className="min-h-[2.75rem] text-base font-bold leading-snug text-[var(--color-text)]">
             {name}
           </h3>
           <Price amount={pricePerDay} per={per} size="md" className="text-right" />
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 mb-4 flex flex-wrap gap-2">
           {specs.map((spec) => (
             <SpecChip key={spec.label} icon={spec.icon}>
               {spec.label}
@@ -84,7 +90,7 @@ export function FleetCard({
           ))}
         </div>
 
-        <Button href={href} variant="outline" fullWidth className="mt-4">
+        <Button href={href} variant="outline" fullWidth className="mt-auto">
           Book Now
         </Button>
       </div>

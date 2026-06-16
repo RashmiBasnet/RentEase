@@ -27,21 +27,17 @@ const defaultLinks: NavLink[] = [
   { label: "History", href: "/history" },
 ];
 
+type NavItemsProps = {
+  links: NavLink[];
+  pathname: string;
+  onClick?: () => void;
+};
 
-export function Navbar({
-  links = defaultLinks,
-  user,
-  searchPlaceholder = "Search vehicles...",
-  onSearch,
-  className,
-}: NavbarProps) {
-  const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-
+function NavItems({ links, pathname, onClick }: NavItemsProps) {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
-  const NavItems = ({ onClick }: { onClick?: () => void }) => (
+  return (
     <>
       {links.map((link) => (
         <Link
@@ -60,6 +56,17 @@ export function Navbar({
       ))}
     </>
   );
+}
+
+export function Navbar({
+  links = defaultLinks,
+  user,
+  searchPlaceholder = "Search vehicles...",
+  onSearch,
+  className,
+}: NavbarProps) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   return (
     <header
@@ -72,7 +79,7 @@ export function Navbar({
         <Logo />
 
         <nav className="hidden items-center gap-7 md:flex">
-          <NavItems />
+          <NavItems links={links} pathname={pathname} />
         </nav>
 
 
@@ -118,7 +125,11 @@ export function Navbar({
       {open && (
         <div className="border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-4">
-            <NavItems onClick={() => setOpen(false)} />
+            <NavItems
+              links={links}
+              pathname={pathname}
+              onClick={() => setOpen(false)}
+            />
           </nav>
           {!user && (
             <Button href="/sign-in" size="sm" fullWidth className="mt-4">

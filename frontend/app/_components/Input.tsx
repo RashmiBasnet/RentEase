@@ -67,7 +67,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           aria-invalid={!!error}
           className={cn(
             "w-full bg-transparent px-4 py-3 text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)]",
-            leftIcon && "pl-2",
+            leftIcon ? "pl-2" : undefined,
             className
           )}
           {...props}
