@@ -1,7 +1,7 @@
 import { getAllVehicles } from "@/lib/api/vehicle/vehicle";
 import { getUserData } from "@/lib/cookie";
 import { Footer } from "../_components/Footer";
-import { Navbar } from "../_components/Navbar";
+import { SiteNavbar } from "../_components/SiteNavbar";
 import { RentalsExplore, type ExploreVehicle } from "./_components/RentalsExplore";
 import type { VehicleTypeFilter } from "./_components/filterTypes";
 
@@ -63,31 +63,41 @@ function mapVehicle(v: any): ExploreVehicle {
   };
 }
 
-export default async function RentalsPage() {
+export default async function RentalsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams;
+  const search = typeof sp.search === "string" ? sp.search.trim() : "";
+
   const [user, vehiclesRes] = await Promise.all([
     getUserData(),
-    safe(getAllVehicles({ size: 60 })),
+    safe(getAllVehicles({ size: 60, search: search || undefined, isAvailable: true })),
   ]);
 
   const raw: any[] = vehiclesRes?.data?.vehicles ?? [];
-  const vehicles = raw.map(mapVehicle);
+  // Only surface vehicles that are actually available to book.
+  const vehicles = raw
+    .filter((v) => v.isAvailable !== false)
+    .map(mapVehicle);
 
   return (
     <>
-      <Navbar
-        user={user ? { name: user.fullName ?? "Account" } : undefined}
-        links={[
-          { label: "Home", href: "/home" },
-          { label: "Rentals", href: "/rentals" },
-          { label: "Locations", href: "/locations" },
-          { label: "History", href: "/history" },
-        ]}
-      />
+      <SiteNavbar />
 
       <main className="mx-auto w-full max-w-[var(--container-max)] px-6 py-10">
         <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-4xl">
-          Explore Vehicle Rentals
+          {search ? "Search Results" : "Explore Vehicle Rentals"}
         </h1>
+        {search && (
+          <p className="mt-1 text-[var(--color-text-secondary)]">
+            {vehicles.length} result{vehicles.length === 1 ? "" : "s"} for{" "}
+            <span className="font-semibold text-[var(--color-text)]">
+              &ldquo;{search}&rdquo;
+            </span>
+          </p>
+        )}
 
         <div className="mt-8">
           {vehicles.length > 0 ? (
@@ -95,7 +105,9 @@ export default async function RentalsPage() {
           ) : (
             <div className="rounded-2xl border border-dashed border-[var(--color-border)] bg-[var(--color-surface-inset)] p-12 text-center">
               <p className="text-[var(--color-text-secondary)]">
-                No vehicles available right now. Please check back soon.
+                {search
+                  ? `No vehicles match “${search}”. Try a different search.`
+                  : "No vehicles available right now. Please check back soon."}
               </p>
             </div>
           )}

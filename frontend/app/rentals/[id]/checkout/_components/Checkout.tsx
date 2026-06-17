@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import {
   ArrowRight,
   Banknote,
@@ -14,6 +15,7 @@ import {
   Landmark,
   Lock,
   Phone,
+  Search,
   User,
   Users,
   Wallet,
@@ -101,6 +103,7 @@ export function Checkout({
   const deposit = vehicle.deposit ?? 0;
   const dailyTotal = vehicle.pricePerDay * days;
   const total = dailyTotal + deposit;
+  const isCash = method === "cash_on_pickup";
 
   const onPay = async () => {
     setError(null);
@@ -117,6 +120,11 @@ export function Checkout({
 
     if (res.success) {
       setConfirmed(res.data ?? {});
+      toast.success(
+        isCash
+          ? "Booking confirmed! Pay in cash at pickup. 🚗"
+          : "Payment successful — your booking is confirmed! 🎉"
+      );
     } else {
       setError(res.message ?? "Payment could not be processed.");
     }
@@ -293,7 +301,15 @@ export function Checkout({
           </div>
         </div>
 
-        <div className="mx-auto mt-6 max-w-4xl">
+        <div className="mx-auto mt-6 flex max-w-4xl flex-col gap-3 sm:flex-row">
+          <Button
+            href="/rentals"
+            size="lg"
+            fullWidth
+            leftIcon={<Search size={18} />}
+          >
+            Continue Browsing Rentals
+          </Button>
           <Button
             href="/history"
             variant="outline"
@@ -396,11 +412,11 @@ export function Checkout({
           onClick={onPay}
           disabled={submitting}
         >
-          {submitting ? "Processing..." : "Pay Now"}
+          {submitting ? "Processing..." : isCash ? "Book Now" : "Pay Now"}
         </Button>
         <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-[var(--color-text-muted)]">
           <Lock size={12} />
-          Secure SSL Encrypted Payment
+          {isCash ? "Pay in cash at the rental hub" : "Secure SSL Encrypted Payment"}
         </p>
       </div>
     </div>

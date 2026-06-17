@@ -5,7 +5,7 @@ import { getMyBookings } from "@/lib/api/booking/booking";
 import { getUserData } from "@/lib/cookie";
 import { ActiveTripCard } from "./ActiveTripCard";
 import { Footer } from "../../_components/Footer";
-import { Navbar } from "../../_components/Navbar";
+import { SiteNavbar } from "../../_components/SiteNavbar";
 import { RentalCard, type RentalSpec } from "../../_components/RentalCard";
 import { RentalSearch } from "../../_components/RentalSearch";
 
@@ -23,6 +23,14 @@ function resolveImage(src?: string) {
 const capitalize = (s?: string) =>
   s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
 
+const getGreeting = () => {
+  const hour = new Date().getHours();
+
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+};
+
 async function safe<T>(p: Promise<T>): Promise<T | null> {
   try {
     return await p;
@@ -39,6 +47,7 @@ export async function HomeDashboard() {
   ]);
 
   const firstName = user?.fullName?.split(" ")[0] ?? "Traveler";
+  const greeting = getGreeting();
 
   const vehicles: any[] = vehiclesRes?.data?.vehicles ?? [];
   const bookings: any[] = Array.isArray(bookingsRes?.data) ? bookingsRes.data : [];
@@ -65,25 +74,16 @@ export async function HomeDashboard() {
 
   return (
     <>
-      <Navbar
-        user={{ name: user?.fullName ?? "Account" }}
-        links={[
-          { label: "Home", href: "/home" },
-          { label: "Rentals", href: "/rentals" },
-          { label: "Locations", href: "/locations" },
-          { label: "History", href: "/history" },
-        ]}
-      />
+      <SiteNavbar />
 
       <main className="mx-auto w-full max-w-[var(--container-max)] px-6 py-10">
         {/* Greeting */}
         <header>
           <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-4xl">
-            Namaste, {firstName}!
+            {greeting}, {firstName}!
           </h1>
           <p className="mt-2 max-w-xl text-[var(--color-text-secondary)]">
-            Your journey through the Himalayas is waiting. Manage your active
-            rentals or plan your next escape.
+            From city commutes to weekend escapes, RentEase helps you find the right ride with confidence.
           </p>
         </header>
 

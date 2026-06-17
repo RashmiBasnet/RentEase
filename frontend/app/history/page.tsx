@@ -1,7 +1,7 @@
 import { handleGetMyBookings } from "@/lib/actions/booking-action";
 import { getUserData } from "@/lib/cookie";
 import { Footer } from "../_components/Footer";
-import { Navbar } from "../_components/Navbar";
+import { SiteNavbar } from "../_components/SiteNavbar";
 import { BookingHistory } from "./_components/BookingHistory";
 import type { HistoryBooking } from "./_components/BookingHistoryCard";
 
@@ -71,15 +71,7 @@ export default async function HistoryPage() {
 
   return (
     <>
-      <Navbar
-        user={user ? { name: user.fullName ?? "Account" } : undefined}
-        links={[
-          { label: "Home", href: "/home" },
-          { label: "Rentals", href: "/rentals" },
-          { label: "Locations", href: "/locations" },
-          { label: "History", href: "/history" },
-        ]}
-      />
+      <SiteNavbar />
 
       <main className="mx-auto w-full max-w-[var(--container-max)] px-6 py-10">
         {bookings.length > 0 ? (

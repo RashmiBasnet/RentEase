@@ -5,7 +5,9 @@ import {
   BadgeCheck,
   Calendar,
   Car,
+  ChevronDown,
   Cog,
+  FileText,
   Fuel,
   Gauge,
   MapPin,
@@ -17,7 +19,7 @@ import { handleGetReviewsForVehicle } from "@/lib/actions/review-action";
 import { getUserData } from "@/lib/cookie";
 import { Badge } from "../../_components/Badge";
 import { Footer } from "../../_components/Footer";
-import { Navbar } from "../../_components/Navbar";
+import { SiteNavbar } from "../../_components/SiteNavbar";
 import { StarRating } from "../../_components/StarRating";
 import { Gallery } from "./_components/Gallery";
 import { BookingPanel } from "./_components/BookingPanel";
@@ -87,15 +89,7 @@ export default async function VehicleDetailsPage({
 
   return (
     <>
-      <Navbar
-        user={user ? { name: user.fullName ?? "Account" } : undefined}
-        links={[
-          { label: "Home", href: "/home" },
-          { label: "Rentals", href: "/rentals" },
-          { label: "Locations", href: "/locations" },
-          { label: "History", href: "/history" },
-        ]}
-      />
+      <SiteNavbar />
 
       <main className="mx-auto w-full max-w-[var(--container-max)] px-6 py-8">
         <Link
@@ -223,6 +217,61 @@ export default async function VehicleDetailsPage({
                 </div>
               </section>
             )}
+
+            {/* Rental terms & policies — revealed on demand (progressive disclosure) */}
+            <section className="mt-8">
+              <details className="group rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 [&_summary]:list-none">
+                <summary className="flex cursor-pointer items-center justify-between gap-3">
+                  <span className="flex items-center gap-2 text-lg font-bold text-[var(--color-text)]">
+                    <FileText size={18} className="text-[var(--color-primary)]" />
+                    Rental terms &amp; policies
+                  </span>
+                  <ChevronDown
+                    size={20}
+                    className="text-[var(--color-text-muted)] transition-transform group-open:rotate-180"
+                  />
+                </summary>
+                <div className="mt-4 grid gap-4 border-t border-[var(--color-border)] pt-4 text-sm text-[var(--color-text-secondary)] sm:grid-cols-2">
+                  <div>
+                    <p className="font-semibold text-[var(--color-text)]">
+                      Documents required
+                    </p>
+                    <p>
+                      Valid driving license and a government-issued ID or
+                      passport at pickup.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[var(--color-text)]">
+                      Fuel policy
+                    </p>
+                    <p>
+                      Provided with a full tank — please return it full to avoid
+                      refuelling charges.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[var(--color-text)]">
+                      Security deposit
+                    </p>
+                    <p>
+                      {v.deposit
+                        ? `A refundable deposit of Rs. ${Number(v.deposit).toLocaleString("en-US")} is collected at pickup.`
+                        : "No security deposit required for this vehicle."}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[var(--color-text)]">
+                      Cancellation
+                    </p>
+                    <p>
+                      Free cancellation up to 24 hours before pickup. Later
+                      cancellations incur a one-day rental fee.
+                    </p>
+                  </div>
+                </div>
+              </details>
+            </section>
 
             {/* Reviews */}
             <section className="mt-10">

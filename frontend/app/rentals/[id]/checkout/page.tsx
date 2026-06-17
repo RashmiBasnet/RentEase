@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { handleGetVehicleById } from "@/lib/actions/vehicle-action";
 import { getUserData } from "@/lib/cookie";
 import { Footer } from "../../../_components/Footer";
-import { Navbar } from "../../../_components/Navbar";
+import { SiteNavbar } from "../../../_components/SiteNavbar";
 import { Checkout, type CheckoutVehicle } from "./_components/Checkout";
 
 const API_BASE =
@@ -72,15 +72,7 @@ export default async function CheckoutPage({
 
   return (
     <>
-      <Navbar
-        user={user ? { name: user.fullName ?? "Account" } : undefined}
-        links={[
-          { label: "Home", href: "/home" },
-          { label: "Rentals", href: "/rentals" },
-          { label: "Locations", href: "/locations" },
-          { label: "History", href: "/history" },
-        ]}
-      />
+      <SiteNavbar />
 
       <main className="mx-auto w-full max-w-[var(--container-max)] px-6 py-10">
         <Checkout
