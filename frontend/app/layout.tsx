@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Sora, Inter } from "next/font/google";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
 const sora = Sora({
@@ -29,7 +31,10 @@ export default function RootLayout({
       lang="en"
       className={`${sora.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <ToastContainer position="top-right" autoClose={4000} theme="light" />
+      </body>
     </html>
   );
 }

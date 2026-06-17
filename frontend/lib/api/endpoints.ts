@@ -17,6 +17,7 @@ export const API = {
         GET_ALL: (params?: {
             page?: number;
             size?: number;
+            search?: string;
             type?: "car" | "bike" | "scooter" | "suv" | "van";
             fuelType?: "petrol" | "diesel" | "electric" | "hybrid";
             transmission?: "manual" | "automatic";
@@ -30,6 +31,7 @@ export const API = {
             const q = new URLSearchParams();
             if (params.page !== undefined) q.set("page", String(params.page));
             if (params.size !== undefined) q.set("size", String(params.size));
+            if (params.search) q.set("search", params.search);
             if (params.type) q.set("type", params.type);
             if (params.fuelType) q.set("fuelType", params.fuelType);
             if (params.transmission) q.set("transmission", params.transmission);

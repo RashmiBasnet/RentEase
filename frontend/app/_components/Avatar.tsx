@@ -33,7 +33,13 @@ export function Avatar({
       style={{ width: size, height: size }}
     >
       {src ? (
-        <Image src={src} alt={name ?? "User"} width={size} height={size} />
+        <Image
+          src={src}
+          alt={name ?? "User"}
+          width={size}
+          height={size}
+          className="h-full w-full object-cover"
+        />
       ) : name ? (
         <span className="text-xs font-semibold">{initials(name)}</span>
       ) : (

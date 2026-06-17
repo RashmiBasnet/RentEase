@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LogOut, Menu, Search, X } from "lucide-react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { AccountMenu } from "./AccountMenu";
 import { Button } from "./Button";
 import { Logo } from "./Logo";
@@ -70,6 +69,20 @@ export function Navbar({
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setQuery(params.get("search") ?? "");
+  }, [pathname]);
+
+  const submitSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    setOpen(false);
+    onSearch?.(q);
+    router.push(q ? `/rentals?search=${encodeURIComponent(q)}` : "/rentals");
+  };
 
   const onLogout = async () => {
     setOpen(false);
@@ -93,17 +106,24 @@ export function Navbar({
         </nav>
 
 
-        <div className="ml-auto hidden max-w-md flex-1 lg:block">
-          <div className="flex items-center gap-2 rounded-full bg-[var(--color-surface-inset)] px-4 py-2.5">
-            <Search size={18} className="text-[var(--color-text-muted)]" />
+        <form
+          onSubmit={submitSearch}
+          role="search"
+          className="ml-auto hidden max-w-md flex-1 lg:block"
+        >
+          <div className="flex items-center gap-2 rounded-full bg-[var(--color-surface-inset)] px-4 py-2.5 focus-within:shadow-[var(--shadow-focus)]">
+            <button type="submit" aria-label="Search" className="shrink-0">
+              <Search size={18} className="text-[var(--color-text-muted)]" />
+            </button>
             <input
               type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder={searchPlaceholder}
-              onChange={(e) => onSearch?.(e.target.value)}
               className="w-full bg-transparent text-sm outline-none placeholder:text-[var(--color-text-muted)]"
             />
           </div>
-        </div>
+        </form>
 
 
         <div className="ml-auto flex items-center gap-3 lg:ml-0">
@@ -132,6 +152,20 @@ export function Navbar({
 
       {open && (
         <div className="border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 md:hidden">
+          <form onSubmit={submitSearch} role="search" className="mb-4">
+            <div className="flex items-center gap-2 rounded-full bg-[var(--color-surface-inset)] px-4 py-2.5">
+              <button type="submit" aria-label="Search" className="shrink-0">
+                <Search size={18} className="text-[var(--color-text-muted)]" />
+              </button>
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={searchPlaceholder}
+                className="w-full bg-transparent text-sm outline-none placeholder:text-[var(--color-text-muted)]"
+              />
+            </div>
+          </form>
           <nav className="flex flex-col gap-4">
             <NavItems
               links={links}

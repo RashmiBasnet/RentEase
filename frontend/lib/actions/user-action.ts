@@ -7,7 +7,7 @@ import {
     updateUserProfile,
     type UpdateProfilePayload,
 } from "../api/user/user";
-import { setUserData } from "../cookie";
+import { getUserData, setUserData } from "../cookie";
 
 export const handleGetProfile = async () => {
     try {
@@ -35,7 +35,6 @@ export const handleUpdateProfile = async (formData: UpdateProfilePayload) => {
     try {
         const result = await updateUserProfile(formData);
         if (result.success) {
-            // Keep the cached user cookie in sync
             await setUserData(result.data);
             return {
                 success: true,
@@ -59,10 +58,12 @@ export const handleUpdateProfilePicture = async (file: File) => {
     try {
         const result = await updateProfilePicture(file);
         if (result.success) {
-            await setUserData(result.data);
+            const current = (await getUserData()) ?? {};
+            const merged = { ...current, ...result.data };
+            await setUserData(merged);
             return {
                 success: true,
-                data: result.data,
+                data: merged,
                 message: result.message || "Profile picture updated",
             };
         }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { toast } from "react-toastify";
 import { AtSign, Phone, User } from "lucide-react";
 import { Button } from "@/app/_components/Button";
 import { TextField } from "@/app/_components/TextField";
@@ -54,11 +55,13 @@ export function SignUpForm({ onSuccess }: { onSuccess?: () => void }) {
     const res = await handleRegister(values);
     if (res.success) {
       setSuccess("Account created! You can now log in.");
+      toast.success("Account created! Please log in to continue.");
       reset();
       onSuccess?.();
       return;
     }
     setServerError(res.message);
+    toast.error(res.message ?? "Sign up failed. Please try again.");
   };
 
   return (
