@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Calendar, Car, Clock, MapPin } from "lucide-react";
 import { Button } from "../../_components/Button";
@@ -29,7 +29,6 @@ const statusBadge: Record<string, string> = {
   cancelled: "bg-[var(--color-danger-soft-bg)] text-[var(--color-danger-soft-text)]",
 };
 
-// Deterministic placeholder tint for vehicles without an image.
 const placeholderTints = [
   "from-[#cbd5e1] to-[#94a3b8]",
   "from-[#1e293b] to-[#475569]",
@@ -46,7 +45,6 @@ const tintFor = (id: string) =>
 export function BookingHistoryCard({ booking }: { booking: HistoryBooking }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [downloading, setDownloading] = useState(false);
   const isUpcoming = ["pending", "confirmed", "active"].includes(booking.status);
 
   const onCancel = () => {
@@ -59,32 +57,6 @@ export function BookingHistoryCard({ booking }: { booking: HistoryBooking }) {
       }
       router.refresh();
     });
-  };
-
-  const onDownloadInvoice = () => {
-    setDownloading(true);
-    const lines = [
-      "RentEase — Rental Invoice",
-      "=================================",
-      `Booking Ref : ${booking.ref}`,
-      `Vehicle     : ${booking.title}`,
-      `Category    : ${booking.subtitle}`,
-      `Period      : ${booking.dateLabel} (${booking.days} day${booking.days === 1 ? "" : "s"})`,
-      `Pickup      : ${booking.location}`,
-      `Status      : ${booking.status.toUpperCase()}`,
-      "---------------------------------",
-      `Total Paid  : NPR ${booking.total.toLocaleString("en-US")}`,
-      "=================================",
-      "Thank you for riding with RentEase!",
-    ];
-    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `invoice-${booking.ref}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setDownloading(false);
   };
 
   return (
@@ -165,7 +137,7 @@ export function BookingHistoryCard({ booking }: { booking: HistoryBooking }) {
           {isUpcoming ? (
             <>
               <Button
-                href={`/rentals/${booking.vehicleId}`}
+                href={`/history/${booking.id}`}
                 variant="outline"
                 size="sm"
                 fullWidth
@@ -184,13 +156,12 @@ export function BookingHistoryCard({ booking }: { booking: HistoryBooking }) {
           ) : booking.status === "completed" ? (
             <>
               <Button
+                href={`/history/${booking.id}`}
                 variant="outline"
                 size="sm"
                 fullWidth
-                onClick={onDownloadInvoice}
-                disabled={downloading}
               >
-                Download Invoice
+                View Details
               </Button>
               <Button
                 href={`/rentals/${booking.vehicleId}`}
@@ -204,7 +175,7 @@ export function BookingHistoryCard({ booking }: { booking: HistoryBooking }) {
           ) : (
             <>
               <Button
-                href={`/rentals/${booking.vehicleId}`}
+                href={`/history/${booking.id}`}
                 variant="outline"
                 size="sm"
                 fullWidth
