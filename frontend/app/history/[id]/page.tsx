@@ -317,10 +317,10 @@ export default async function BookingDetailPage({
 
             <div className="overflow-hidden rounded-2xl border border-[var(--color-border)] shadow-[var(--shadow-sm)]">
               <div className="bg-[var(--color-primary)] p-5 text-[var(--color-on-primary)]">
-                <p className="text-xs font-semibold uppercase tracking-wider opacity-90">
+                <p className="text-xs text-white font-semibold uppercase tracking-wider opacity-90">
                   Total {paid ? "Paid" : "Due"}
                 </p>
-                <p className="mt-1 font-[family-name:var(--font-display)] text-3xl font-bold">
+                <p className="mt-1 font-[family-name:var(--font-display)] text-3xl text-white font-bold">
                   {rs(total)}
                 </p>
                 <span
