@@ -16,7 +16,6 @@ const UserSchema: Schema = new Schema(
                 enum: ["Point"],
                 default: "Point",
             },
-            // GeoJSON format: [longitude, latitude]
             coordinates: {
                 type: [Number],
                 default: [0, 0],

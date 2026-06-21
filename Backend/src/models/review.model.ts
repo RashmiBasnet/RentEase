@@ -13,7 +13,6 @@ const ReviewSchema: Schema = new Schema(
     { timestamps: true }
 );
 
-// Ensure a user can only review a vehicle once per booking
 ReviewSchema.index({ userId: 1, bookingId: 1 }, { unique: true });
 
 export interface IReview extends Omit<ReviewType, "userId" | "vehicleId" | "bookingId">, Document {

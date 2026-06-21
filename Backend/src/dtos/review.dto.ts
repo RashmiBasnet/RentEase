@@ -1,7 +1,6 @@
 import z from "zod";
 import { ReviewSchema } from "../types/review.type";
 
-// User provides these — server computes userId from token
 export const CreateReviewDto = ReviewSchema.pick({
     vehicleId: true,
     bookingId: true,

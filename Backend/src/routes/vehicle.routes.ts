@@ -4,9 +4,11 @@ import {
     adminOnlyMiddleware,
     authorizedMiddleware,
 } from "../middlewares/authorization.middleware";
+import { uploads } from "../middlewares/upload.middleware";
 
 const router = Router();
 const vehicleController = new VehicleController();
+const maxVehicleImages = 12;
 
 router.get("/", vehicleController.getAllVehicles.bind(vehicleController));
 router.get("/near", vehicleController.getVehiclesNear.bind(vehicleController));
@@ -16,12 +18,14 @@ router.post(
     "/",
     authorizedMiddleware,
     adminOnlyMiddleware,
+    uploads.array("images", maxVehicleImages),
     vehicleController.createVehicle.bind(vehicleController)
 );
 router.patch(
     "/:id",
     authorizedMiddleware,
     adminOnlyMiddleware,
+    uploads.array("images", maxVehicleImages),
     vehicleController.updateVehicle.bind(vehicleController)
 );
 router.delete(

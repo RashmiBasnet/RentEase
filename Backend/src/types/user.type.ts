@@ -2,7 +2,6 @@ import z from "zod";
 
 const GeoPointSchema = z.object({
     type: z.literal("Point").default("Point"),
-    // GeoJSON format: [longitude, latitude]
     coordinates: z.tuple([z.number(), z.number()]),
 });
 

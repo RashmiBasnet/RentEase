@@ -20,7 +20,6 @@ const ReportSchema: Schema = new Schema(
     { timestamps: true }
 );
 
-// Prevent a user from reporting the same vehicle multiple times
 ReportSchema.index({ reportedBy: 1, vehicleId: 1 }, { unique: true });
 
 export interface IReport extends Omit<ReportType, "reportedBy" | "vehicleId">, Document {
