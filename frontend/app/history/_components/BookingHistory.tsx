@@ -95,7 +95,7 @@ export function BookingHistory({ bookings }: { bookings: HistoryBooking[] }) {
       label: "Rental Days",
       value: stats.days,
       icon: Clock,
-      tint: "bg-[#fff4e5] text-[#b54708]",
+      tint: "bg-[var(--color-warning-soft-bg)] text-[var(--color-warning-soft-text)]",
     },
     {
       label: "Total Spent",

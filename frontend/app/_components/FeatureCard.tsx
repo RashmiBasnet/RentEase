@@ -15,7 +15,7 @@ type FeatureCardProps = {
 const toneClasses: Record<FeatureTone, string> = {
   primary: "bg-[var(--color-primary-50)] text-[var(--color-primary)]",
   success: "bg-[var(--color-success-soft-bg)] text-[var(--color-success)]",
-  warning: "bg-[#fef0e0] text-[var(--color-warning)]",
+  warning: "bg-[var(--color-warning-soft-bg)] text-[var(--color-warning-soft-text)]",
 };
 
 

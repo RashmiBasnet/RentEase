@@ -66,7 +66,7 @@ const statusPill: Record<string, string> = {
   completed: "bg-[var(--color-success-soft-bg)] text-[var(--color-success-soft-text)]",
   active: "bg-[var(--color-success-soft-bg)] text-[var(--color-success-soft-text)]",
   confirmed: "bg-[var(--color-primary-50)] text-[var(--color-primary)]",
-  pending: "bg-[#fff4e5] text-[#b54708]",
+  pending: "bg-[var(--color-warning-soft-bg)] text-[var(--color-warning-soft-text)]",
   cancelled: "bg-[var(--color-danger-soft-bg)] text-[var(--color-danger-soft-text)]",
 };
 

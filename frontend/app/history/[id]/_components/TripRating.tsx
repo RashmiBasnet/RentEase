@@ -23,7 +23,7 @@ export function TripRating({ vehicleId, bookingId }: TripRatingProps) {
 
   if (done) {
     return (
-      <div className="rounded-2xl border border-[var(--color-warning)]/30 bg-[#fff8ec] p-5 text-center">
+      <div className="rounded-2xl border border-[var(--color-warning)]/30 bg-[var(--color-warning-soft-bg)] p-5 text-center">
         <Star
           size={28}
           className="mx-auto text-[var(--color-warning)]"
@@ -66,7 +66,7 @@ export function TripRating({ vehicleId, bookingId }: TripRatingProps) {
   };
 
   return (
-    <div className="rounded-2xl border border-[var(--color-warning)]/30 bg-[#fff8ec] p-5">
+    <div className="rounded-2xl border border-[var(--color-warning)]/30 bg-[var(--color-warning-soft-bg)] p-5">
       <div className="flex items-start gap-3">
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-warning)]/15 text-[var(--color-warning)]">
           <Star size={20} fill="currentColor" />

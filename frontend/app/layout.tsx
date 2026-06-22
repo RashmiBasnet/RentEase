@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Sora, Inter } from "next/font/google";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+import { ThemedToast } from "./_components/ThemedToast";
 
 const sora = Sora({
   variable: "--font-display",
@@ -30,10 +30,20 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${sora.variable} ${inter.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* Apply the saved theme before paint to avoid a flash of the wrong theme.
+            Default is light; only an explicit prior choice flips to dark. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("rentease-theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light");}catch(e){document.documentElement.setAttribute("data-theme","light");}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         {children}
-        <ToastContainer position="top-right" autoClose={4000} theme="light" />
+        <ThemedToast />
       </body>
     </html>
   );

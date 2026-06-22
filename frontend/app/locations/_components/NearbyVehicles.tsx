@@ -177,7 +177,7 @@ export function NearbyVehicles() {
               </p>
 
               {!secure && (
-                <p className="mx-auto mt-3 inline-flex max-w-sm items-center gap-1.5 rounded-lg bg-[#fff4e5] px-3 py-2 text-xs text-[#b54708]">
+                <p className="mx-auto mt-3 inline-flex max-w-sm items-center gap-1.5 rounded-lg bg-[var(--color-warning-soft-bg)] px-3 py-2 text-xs text-[var(--color-warning-soft-text)]">
                   <TriangleAlert size={14} />
                   Location needs a secure connection. Open the site via
                   localhost or HTTPS.

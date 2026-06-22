@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { AccountMenu } from "./AccountMenu";
 import { Button } from "./Button";
 import { Logo } from "./Logo";
+import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "./cn";
 import { handleLogout } from "@/lib/actions/auth-action";
 
@@ -127,6 +128,8 @@ export function Navbar({
 
 
         <div className="ml-auto flex items-center gap-3 lg:ml-0">
+          <ThemeToggle />
+
           {user ? (
             <AccountMenu name={user.name} avatarUrl={user.avatarUrl} />
           ) : (
