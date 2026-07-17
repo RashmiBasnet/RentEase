@@ -3,7 +3,6 @@ import { getUserData } from "@/lib/cookie";
 import { Footer } from "../_components/Footer";
 import { SiteNavbar } from "../_components/SiteNavbar";
 import { RentalsExplore, type ExploreVehicle } from "./_components/RentalsExplore";
-import type { VehicleTypeFilter } from "./_components/filterTypes";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5050";
@@ -44,14 +43,15 @@ async function safe<T>(p: Promise<T>): Promise<T | null> {
 
 function mapVehicle(v: any): ExploreVehicle {
   const id = String(v._id);
+  const reviewCount = Number(v.reviewCount ?? 0);
   return {
     id,
     name: v.title,
     imageUrl: resolveImage(v.images?.[0]) ?? "/images/vehicles/placeholder.png",
     status: v.isAvailable === false ? "booked" : "available",
     verified: v.isVerified,
-    rating: v.rating,
-    reviewCount: v.reviewCount,
+    rating: reviewCount > 0 ? v.rating : undefined,
+    reviewCount: reviewCount > 0 ? reviewCount : undefined,
     transmission: capitalize(v.transmission),
     fuelType: capitalize(v.fuelType),
     seats: v.seats,
@@ -77,7 +77,6 @@ export default async function RentalsPage({
   ]);
 
   const raw: any[] = vehiclesRes?.data?.vehicles ?? [];
-  // Only surface vehicles that are actually available to book.
   const vehicles = raw
     .filter((v) => v.isAvailable !== false)
     .map(mapVehicle);

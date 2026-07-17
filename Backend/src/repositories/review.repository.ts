@@ -19,6 +19,9 @@ export interface IReviewRepository {
     getReviewById(id: string): Promise<IReview | null>;
     getReviewByBookingId(bookingId: string): Promise<IReview | null>;
     getAverageRatingForVehicle(vehicleId: string): Promise<number>;
+    getRatingsForVehicles(
+        vehicleIds: (string | Types.ObjectId)[]
+    ): Promise<Map<string, { avg: number; count: number }>>;
     updateReview(id: string, data: Partial<IReview>): Promise<IReview | null>;
     deleteReview(id: string): Promise<IReview | null>;
 }
@@ -72,6 +75,31 @@ export class ReviewRepository implements IReviewRepository {
             { $group: { _id: null, avgRating: { $avg: "$rating" } } },
         ]);
         return result.length > 0 ? Math.round(result[0].avgRating * 10) / 10 : 0;
+    }
+
+    async getRatingsForVehicles(
+        vehicleIds: (string | Types.ObjectId)[]
+    ): Promise<Map<string, { avg: number; count: number }>> {
+        const ids = vehicleIds.map((id) => new Types.ObjectId(String(id)));
+        const result = await ReviewModel.aggregate([
+            { $match: { vehicleId: { $in: ids } } },
+            {
+                $group: {
+                    _id: "$vehicleId",
+                    avg: { $avg: "$rating" },
+                    count: { $sum: 1 },
+                },
+            },
+        ]);
+
+        const map = new Map<string, { avg: number; count: number }>();
+        for (const r of result) {
+            map.set(String(r._id), {
+                avg: Math.round(r.avg * 10) / 10,
+                count: r.count,
+            });
+        }
+        return map;
     }
 
     async updateReview(id: string, data: Partial<IReview>): Promise<IReview | null> {

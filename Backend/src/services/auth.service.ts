@@ -4,6 +4,7 @@ import { HttpError } from "../errors/http-error";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config";
+import { sendEmail } from "../config/email";
 
 const CLIENT_URL = process.env.CLIENT_URL as string;
 
@@ -56,6 +57,60 @@ export class AuthService {
         }
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
         const resetLink = `${CLIENT_URL}/reset-password?token=${token}`;
+        const firstName = user.fullName?.split(" ")[0] || "there";
+        const html = `
+            <div style="max-width:600px;margin:0 auto;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#ffffff;border:1px solid #e4e7ec;border-radius:16px;overflow:hidden;">
+
+                <!-- Header -->
+                <div style="background:#0a5be0;color:#ffffff;padding:28px 24px;text-align:center;">
+                    <div style="font-size:24px;font-weight:800;letter-spacing:-0.02em;">RentEase</div>
+                    <div style="margin-top:4px;font-size:13px;color:#d9e6ff;">Reliable vehicle rentals across Nepal</div>
+                </div>
+
+                <!-- Body -->
+                <div style="padding:32px 28px;color:#101828;line-height:1.6;">
+                    <h2 style="margin:0 0 16px;font-size:20px;color:#101828;">Reset your password</h2>
+                    <p style="margin:0 0 16px;color:#475467;">
+                        Hi ${firstName}, we received a request to reset the password for your RentEase account.
+                    </p>
+                    <p style="margin:0 0 8px;color:#475467;">
+                        Click the button below to choose a new password. This link will expire in
+                        <strong style="color:#101828;">1 hour</strong>.
+                    </p>
+
+                    <!-- Button -->
+                    <div style="text-align:center;margin:32px 0;">
+                        <a
+                            href="${resetLink}"
+                            style="background:#0a5be0;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:12px;display:inline-block;font-weight:600;font-size:15px;"
+                        >
+                            Reset Password
+                        </a>
+                    </div>
+
+                    <p style="margin:0 0 8px;font-size:13px;color:#667085;">
+                        If the button doesn't work, copy and paste this link into your browser:
+                    </p>
+                    <p style="margin:0 0 24px;font-size:13px;word-break:break-all;">
+                        <a href="${resetLink}" style="color:#0a5be0;text-decoration:none;">${resetLink}</a>
+                    </p>
+
+                    <div style="border-top:1px solid #e4e7ec;padding-top:16px;">
+                        <p style="margin:0;font-size:13px;color:#667085;">
+                            If you didn't request a password reset, you can safely ignore this email — your password will stay the same.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div style="background:#f2f4f7;padding:20px;text-align:center;font-size:12px;color:#667085;">
+                    © ${new Date().getFullYear()} RentEase. All rights reserved.
+                </div>
+
+            </div>
+        `;
+
+        await sendEmail(user.email, "Reset your RentEase password", html);
         return user;
     }
 

@@ -17,6 +17,7 @@
   --color-text-link: var(--color-primary);
 
 
+  --color-bg: #ffffff;
   --color-surface: #ffffff;
   --color-surface-inset: #f2f4f7;
   --color-surface-muted: #eef0fb;
@@ -34,6 +35,8 @@
   --color-danger-soft-bg: #fef3f2;
   --color-danger-soft-text: #b42318;
   --color-warning: #f79009;
+  --color-warning-soft-bg: #fff4e5;
+  --color-warning-soft-text: #b54708;
 
 
   --text-xs: 0.75rem;
@@ -88,6 +91,59 @@
 
 
 
+/* ============================================================
+   Dark theme — token overrides.
+   Activated by [data-theme="dark"] on <html> (set by ThemeToggle).
+   Desaturated/lighter tonal variants, not inverted colors;
+   contrasts verified against AA (4.5:1 body, 3:1 large/UI).
+   ============================================================ */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-primary: #4d8dff;
+  --color-primary-hover: #6ba1ff;
+  --color-primary-50: #16233d;
+  --color-primary-100: #1f3354;
+  --color-on-primary: #ffffff;
+
+  --color-text: #f0f3f9;
+  --color-text-secondary: #aeb7c4;
+  --color-text-muted: #7d8896;
+
+  --color-bg: #0a0e16;
+  --color-surface: #151a23;
+  --color-surface-inset: #1f2630;
+  --color-surface-muted: #18243d;
+
+  --color-border: #262d3a;
+  --color-border-strong: #37414f;
+
+  --color-success: #32d583;
+  --color-success-soft-bg: #102a1e;
+  --color-success-soft-text: #6ce9a6;
+  --color-danger: #f97066;
+  --color-danger-soft-bg: #2c1614;
+  --color-danger-soft-text: #fda29b;
+  --color-warning: #fdb022;
+  --color-warning-soft-bg: #2e2210;
+  --color-warning-soft-text: #fec84b;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.55);
+  --shadow-focus: 0 0 0 3px rgba(77, 141, 255, 0.4);
+}
+
+/* Solid status badges: bright fills need dark text in dark mode for AA. */
+[data-theme="dark"] .badge-available {
+  color: #06140c;
+}
+
+[data-theme="dark"] .badge-booked {
+  color: #2c0a08;
+}
+
+
+
 @layer base {
 
 *,
@@ -107,7 +163,7 @@ html {
 
 body {
   font-family: var(--font-body), system-ui, -apple-system, sans-serif;
-  background: var(--color-surface);
+  background: var(--color-bg);
   color: var(--color-text);
   font-size: var(--text-base);
   -webkit-font-smoothing: antialiased;

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { ShieldCheck, Star, StarHalf } from "lucide-react";
+import { ArrowLeft, ShieldCheck, Star, StarHalf } from "lucide-react";
 import { LoginForm } from "./_components/LoginForm";
 import { SignUpForm } from "./_components/SignUpForm";
 
@@ -33,8 +33,16 @@ export default function SignInPage() {
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,38,71,0.30)_0%,rgba(6,28,58,0.35)_45%,rgba(3,15,48,0.92)_100%)]" />
 
+        <Link
+          href="/"
+          aria-label="Back to home"
+          className="absolute left-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white no-underline transition-colors hover:bg-white/20 hover:no-underline"
+        >
+          <ArrowLeft size={20} />
+        </Link>
+
         <div className="relative flex h-full min-h-[420px] flex-col p-8 sm:p-12 lg:min-h-screen lg:p-16">
-          <span className="text-2xl font-extrabold tracking-tight text-white">
+          <span className="text-3xl mt-8 font-extrabold tracking-tight text-white">
             RentEase
           </span>
 

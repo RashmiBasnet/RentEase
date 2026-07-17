@@ -3,7 +3,7 @@ import { capitalize, statusTone } from "./adminUtils";
 
 const toneClasses: Record<string, string> = {
   success: "bg-[var(--color-success-soft-bg)] text-[var(--color-success-soft-text)]",
-  warning: "bg-[#fff4e5] text-[#b54708]",
+  warning: "bg-[var(--color-warning-soft-bg)] text-[var(--color-warning-soft-text)]",
   danger: "bg-[var(--color-danger-soft-bg)] text-[var(--color-danger-soft-text)]",
   info: "bg-[var(--color-primary-50)] text-[var(--color-primary)]",
   neutral: "bg-[var(--color-surface-inset)] text-[var(--color-text-secondary)]",
