@@ -52,12 +52,6 @@ const methods = [
     icon: Wallet,
   },
   {
-    value: "bank_transfer",
-    title: "Bank Transfer",
-    desc: "ConnectIPS or Mobile Banking",
-    icon: Landmark,
-  },
-  {
     value: "cash_on_pickup",
     title: "Cash on Pickup",
     desc: "Pay at the rental hub",

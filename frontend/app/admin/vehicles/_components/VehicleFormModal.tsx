@@ -6,7 +6,7 @@ import { X } from "lucide-react";
 import { Button } from "../../../_components/Button";
 import { TextField } from "../../../_components/TextField";
 import { Select } from "../../../_components/Select";
-import { Modal } from "../../_components/Modal";
+import { Modal } from "../../../_components/Modal";
 import { resolveImage } from "../../_components/adminUtils";
 import {
   handleCreateVehicle,

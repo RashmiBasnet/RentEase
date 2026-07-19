@@ -28,7 +28,7 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
   return (
     <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto p-4 sm:p-6">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative my-4 w-full max-w-lg rounded-2xl bg-[var(--color-surface)] shadow-[var(--shadow-md)]">
+      <div className="relative my-auto w-full max-w-lg rounded-2xl bg-[var(--color-surface)] shadow-[var(--shadow-md)]">
         <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
           <h2 className="text-lg font-bold text-[var(--color-text)]">{title}</h2>
           <button
