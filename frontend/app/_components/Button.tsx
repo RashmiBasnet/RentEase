@@ -35,9 +35,37 @@ type CommonProps = {
   fullWidth?: boolean;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  /** Shows a spinner and blocks interaction while an async action is in flight. */
+  loading?: boolean;
   className?: string;
   children?: ReactNode;
 };
+
+function Spinner() {
+  return (
+    <svg
+      className="size-4 shrink-0 animate-spin motion-reduce:animate-none"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="3"
+        className="opacity-25"
+      />
+      <path
+        d="M12 2a10 10 0 0 1 10 10"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
 type AsButton = CommonProps &
   ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined };
@@ -52,6 +80,7 @@ export function Button(props: AsButton | AsLink) {
     fullWidth,
     leftIcon,
     rightIcon,
+    loading = false,
     className,
     children,
     ...rest
@@ -67,9 +96,9 @@ export function Button(props: AsButton | AsLink) {
 
   const content = (
     <>
-      {leftIcon}
+      {loading ? <Spinner /> : leftIcon}
       {children}
-      {rightIcon}
+      {!loading && rightIcon}
     </>
   );
 
@@ -82,10 +111,14 @@ export function Button(props: AsButton | AsLink) {
     );
   }
 
+  const buttonRest = rest as ButtonHTMLAttributes<HTMLButtonElement>;
+
   return (
     <button
       className={classes}
-      {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
+      aria-busy={loading || undefined}
+      {...buttonRest}
+      disabled={buttonRest.disabled || loading}
     >
       {content}
     </button>

@@ -77,6 +77,15 @@ export function Navbar({
     setQuery(params.get("search") ?? "");
   }, [pathname]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
@@ -144,9 +153,9 @@ export function Navbar({
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            className="text-[var(--color-text)] md:hidden"
+            aria-controls="mobile-menu"
+            className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-lg text-[var(--color-text)] md:hidden"
           >
-            {open ? <Menu size={22} className="hidden" /> : null}
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
@@ -154,10 +163,17 @@ export function Navbar({
 
 
       {open && (
-        <div className="border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 md:hidden">
+        <div
+          id="mobile-menu"
+          className="border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 md:hidden"
+        >
           <form onSubmit={submitSearch} role="search" className="mb-4">
             <div className="flex items-center gap-2 rounded-full bg-[var(--color-surface-inset)] px-4 py-2.5">
-              <button type="submit" aria-label="Search" className="shrink-0">
+              <button
+                type="submit"
+                aria-label="Search"
+                className="-my-2.5 -ml-2 inline-flex h-11 w-9 shrink-0 items-center justify-center"
+              >
                 <Search size={18} className="text-[var(--color-text-muted)]" />
               </button>
               <input

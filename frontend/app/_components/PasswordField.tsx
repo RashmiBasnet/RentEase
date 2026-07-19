@@ -2,6 +2,7 @@
 
 import {
   forwardRef,
+  useId,
   useState,
   type InputHTMLAttributes,
   type ReactNode,
@@ -17,7 +18,9 @@ type PasswordFieldProps = InputHTMLAttributes<HTMLInputElement> & {
 
 export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
   function PasswordField({ label, error, action, id, className, ...props }, ref) {
-    const inputId = id ?? props.name;
+    const generatedId = useId();
+    const inputId = id ?? props.name ?? generatedId;
+    const errorId = `${inputId}-error`;
     const [show, setShow] = useState(false);
 
     return (
@@ -47,6 +50,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             ref={ref}
             type={show ? "text" : "password"}
             aria-invalid={!!error}
+            aria-describedby={error ? errorId : undefined}
             className={cn(
               "w-full bg-transparent py-3 pl-2 pr-2 text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)]",
               className
@@ -59,11 +63,17 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             aria-label={show ? "Hide password" : "Show password"}
             className="flex items-center px-3 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
           >
-            {show ? <Eye size={18} /> : <EyeOff size={18} />}
+            {show ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
         {error && (
-          <p className="text-xs text-[var(--color-danger-soft-text)]">{error}</p>
+          <p
+            id={errorId}
+            role="alert"
+            className="text-xs text-[var(--color-danger-soft-text)]"
+          >
+            {error}
+          </p>
         )}
       </div>
     );

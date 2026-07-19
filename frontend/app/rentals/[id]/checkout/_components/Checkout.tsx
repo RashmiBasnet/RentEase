@@ -435,7 +435,10 @@ export function Checkout({
             </h2>
 
             {error && (
-              <p className="mt-4 rounded-lg bg-[var(--color-danger-soft-bg)] px-3 py-2 text-sm text-[var(--color-danger-soft-text)]">
+              <p
+                role="alert"
+                className="mt-4 rounded-lg bg-[var(--color-danger-soft-bg)] px-3 py-2 text-sm text-[var(--color-danger-soft-text)]"
+              >
                 {error}
               </p>
             )}

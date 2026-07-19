@@ -71,7 +71,10 @@ export function SignUpForm({ onSuccess }: { onSuccess?: () => void }) {
       noValidate
     >
       {serverError && (
-        <p className="rounded-lg bg-[var(--color-danger-soft-bg)] px-4 py-2.5 text-sm text-[var(--color-danger-soft-text)]">
+        <p
+          role="alert"
+          className="rounded-lg bg-[var(--color-danger-soft-bg)] px-4 py-2.5 text-sm text-[var(--color-danger-soft-text)]"
+        >
           {serverError}
         </p>
       )}

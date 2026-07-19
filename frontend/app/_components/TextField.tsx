@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, type InputHTMLAttributes, type ReactNode } from "react";
+import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from "react";
 import { cn } from "./cn";
 
 type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & {
@@ -12,7 +12,9 @@ type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & {
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   function TextField({ label, icon, prefix, error, id, className, ...props }, ref) {
-    const inputId = id ?? props.name;
+    const generatedId = useId();
+    const inputId = id ?? props.name ?? generatedId;
+    const errorId = `${inputId}-error`;
     const hasAdornment = !!icon || !!prefix;
 
     return (
@@ -45,6 +47,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             id={inputId}
             ref={ref}
             aria-invalid={!!error}
+            aria-describedby={error ? errorId : undefined}
             className={cn(
               "w-full bg-transparent py-3 pr-4 text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)]",
               hasAdornment ? "pl-2" : "pl-4",
@@ -54,7 +57,13 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           />
         </div>
         {error && (
-          <p className="text-xs text-[var(--color-danger-soft-text)]">{error}</p>
+          <p
+            id={errorId}
+            role="alert"
+            className="text-xs text-[var(--color-danger-soft-text)]"
+          >
+            {error}
+          </p>
         )}
       </div>
     );
