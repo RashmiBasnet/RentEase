@@ -85,6 +85,11 @@ export const API = {
         CANCEL: (id: string) => `/api/bookings/${id}/cancel`,
     },
 
+    PAYMENT: {
+        KHALTI_INITIATE: "/api/payments/khalti/initiate",
+        KHALTI_VERIFY: "/api/payments/khalti/verify",
+    },
+
     REVIEW: {
         CREATE: "/api/reviews",
         GET_FOR_VEHICLE: (vehicleId: string) => `/api/reviews/vehicle/${vehicleId}`,

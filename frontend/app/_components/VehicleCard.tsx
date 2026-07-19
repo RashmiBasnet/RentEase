@@ -130,11 +130,11 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
         <div className="mt-auto flex flex-wrap items-center justify-between gap-3">
           <Price amount={pricePerDay} per="day" size="sm" />
           {isAvailable ? (
-            <Button href={bookHref ?? href} size="sm" className="relative z-20">
+            <Button href={bookHref ?? href} size="sm" className="relative z-20 shrink-0">
               Quick Book
             </Button>
           ) : (
-            <Button variant="ghost" size="sm" className="relative z-20" disabled>
+            <Button variant="ghost" size="sm" className="relative z-20 shrink-0" disabled>
               Notify Me
             </Button>
           )}

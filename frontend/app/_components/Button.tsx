@@ -12,7 +12,7 @@ type Variant = "primary" | "outline" | "ghost";
 type Size = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl font-semibold leading-none no-underline hover:no-underline transition-colors duration-200 active:translate-y-px focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:translate-y-0";
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-semibold leading-none no-underline hover:no-underline transition-colors duration-200 active:translate-y-px focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:translate-y-0";
 
 const variantClasses: Record<Variant, string> = {
   primary:
