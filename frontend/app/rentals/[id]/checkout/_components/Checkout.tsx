@@ -424,7 +424,7 @@ export function Checkout({
 
   return (
     <div>
-      <Stepper steps={["Vehicle", "Payment", "Confirm"]} current={step} />
+      <Stepper steps={["Details", "Payment", "Confirmation"]} current={step} />
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_22rem]">
         {/* Left column — payment */}

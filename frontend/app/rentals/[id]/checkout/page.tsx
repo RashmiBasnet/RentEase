@@ -44,7 +44,7 @@ export default async function CheckoutPage({
   // Without valid dates there's nothing to pay for — send the user back to pick them.
   const days = start && end ? dayCount(start, end) : 0;
   if (!start || !end || days <= 0) {
-    redirect(`/rentals/${id}`);
+    redirect(`/rentals/${id}/book`);
   }
 
   const [user, vehicleRes] = await Promise.all([
