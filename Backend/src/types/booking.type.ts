@@ -20,6 +20,8 @@ export const BookingObjectSchema = z.object({
     status: z.enum(["pending", "confirmed", "active", "completed", "cancelled"]).default("pending"),
     paymentStatus: z.enum(["pending", "paid", "refunded"]).default("pending"),
     paymentMethod: z.string().trim().optional(),
+    khaltiPidx: z.string().trim().optional(),
+    khaltiTransactionId: z.string().trim().optional(),
     notes: z.string().trim().optional(),
 });
 

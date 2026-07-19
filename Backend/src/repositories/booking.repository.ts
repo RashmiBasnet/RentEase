@@ -20,6 +20,7 @@ export interface IBookingRepository {
         vehicleId,
     }: BookingListFilters): Promise<{ bookings: IBooking[]; total: number }>;
     getBookingById(id: string): Promise<IBooking | null>;
+    getBookingByKhaltiPidx(pidx: string): Promise<IBooking | null>;
     getBookingsByUserId(userId: string): Promise<IBooking[]>;
     updateBooking(id: string, data: Partial<IBooking>): Promise<IBooking | null>;
     hasOverlappingBooking(
@@ -66,7 +67,16 @@ export class BookingRepository implements IBookingRepository {
     async getBookingById(id: string): Promise<IBooking | null> {
         return BookingModel.findById(id)
             .populate("userId", "fullName email phoneNumber profilePicture")
-            .populate("vehicleId", "title brand vehicleModel images pricePerDay type pickupAddress");
+            .populate(
+                "vehicleId",
+                "title brand vehicleModel images pricePerDay type pickupAddress transmission fuelType seats isVerified insurance"
+            );
+    }
+
+    async getBookingByKhaltiPidx(pidx: string): Promise<IBooking | null> {
+        return BookingModel.findOne({ khaltiPidx: pidx })
+            .populate("userId", "fullName email phoneNumber profilePicture")
+            .populate("vehicleId", "title brand vehicleModel images pricePerDay type");
     }
 
     async getBookingsByUserId(userId: string): Promise<IBooking[]> {
