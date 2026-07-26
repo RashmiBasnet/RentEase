@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, type InputHTMLAttributes, type ReactNode } from "react";
+import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from "react";
 import { cn } from "./cn";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
@@ -30,7 +30,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   },
   ref
 ) {
-  const inputId = id ?? props.name;
+  const generatedId = useId();
+  const inputId = id ?? props.name ?? generatedId;
+  const descriptionId = `${inputId}-description`;
 
   return (
     <div className={cn("flex flex-col gap-1.5", wrapperClassName)}>
@@ -65,6 +67,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           id={inputId}
           ref={ref}
           aria-invalid={!!error}
+          aria-describedby={error || hint ? descriptionId : undefined}
           className={cn(
             "w-full bg-transparent px-4 py-3 text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)]",
             leftIcon ? "pl-2" : undefined,
@@ -76,6 +79,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 
       {(error || hint) && (
         <p
+          id={descriptionId}
+          role={error ? "alert" : undefined}
           className={cn(
             "text-xs",
             error

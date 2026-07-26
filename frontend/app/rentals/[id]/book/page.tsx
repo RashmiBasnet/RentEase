@@ -1,9 +1,11 @@
-import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { handleGetVehicleById } from "@/lib/actions/vehicle-action";
 import { getUserData } from "@/lib/cookie";
 import { Footer } from "../../../_components/Footer";
 import { SiteNavbar } from "../../../_components/SiteNavbar";
-import { Checkout, type CheckoutVehicle } from "./_components/Checkout";
+import { BookingDetails, type BookingVehicle } from "./_components/BookingDetails";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5050";
@@ -19,33 +21,12 @@ function resolveImage(src?: string) {
 const capitalize = (s?: string) =>
   s ? s.charAt(0).toUpperCase() + s.slice(1) : undefined;
 
-const dayCount = (start: string, end: string) => {
-  const diff = Math.ceil(
-    (new Date(end).getTime() - new Date(start).getTime()) / 86_400_000
-  );
-  return diff > 0 ? diff : 0;
-};
-
-export default async function CheckoutPage({
+export default async function BookingDetailsPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
-  const sp = await searchParams;
-
-  const start = typeof sp.start === "string" ? sp.start : "";
-  const end = typeof sp.end === "string" ? sp.end : "";
-  const pickup = typeof sp.pickup === "string" ? sp.pickup : "";
-  const notes = typeof sp.notes === "string" ? sp.notes : undefined;
-
-  // Without valid dates there's nothing to pay for — send the user back to pick them.
-  const days = start && end ? dayCount(start, end) : 0;
-  if (!start || !end || days <= 0) {
-    redirect(`/rentals/${id}/book`);
-  }
 
   const [user, vehicleRes] = await Promise.all([
     getUserData(),
@@ -57,7 +38,7 @@ export default async function CheckoutPage({
   }
 
   const v = vehicleRes.data;
-  const vehicle: CheckoutVehicle = {
+  const vehicle: BookingVehicle = {
     id,
     title: v.title,
     imageUrl: resolveImage(v.images?.[0]),
@@ -74,15 +55,25 @@ export default async function CheckoutPage({
     <>
       <SiteNavbar />
 
-      <main className="mx-auto w-full max-w-[var(--container-max)] px-6 py-10">
-        <Checkout
-          vehicle={vehicle}
-          startDate={start}
-          endDate={end}
-          pickup={pickup}
-          notes={notes}
-          days={days}
-        />
+      <main className="mx-auto w-full max-w-[var(--container-max)] px-6 py-8">
+        <Link
+          href={`/rentals/${id}`}
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-text-secondary)] no-underline hover:text-[var(--color-primary)]"
+        >
+          <ArrowLeft size={16} />
+          Back to vehicle details
+        </Link>
+
+        <div className="mt-6">
+          <BookingDetails
+            vehicle={vehicle}
+            driver={{
+              fullName: user?.fullName ?? "",
+              email: user?.email ?? "",
+              phone: user?.phone ?? "",
+            }}
+          />
+        </div>
       </main>
 
       <Footer />

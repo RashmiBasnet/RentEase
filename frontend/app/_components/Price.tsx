@@ -35,7 +35,7 @@ export function Price({
           {prefix}
         </span>
       )}
-      <span className="font-[family-name:var(--font-display)] font-bold text-[var(--color-primary)]">
+      <span className="whitespace-nowrap font-[family-name:var(--font-display)] font-bold text-[var(--color-primary)]">
         <span className="text-sm font-semibold align-baseline">
           {currency}{" "}
         </span>

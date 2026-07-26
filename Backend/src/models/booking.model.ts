@@ -30,6 +30,9 @@ const BookingSchema: Schema = new Schema(
             default: "pending",
         },
         paymentMethod: { type: String },
+        // Khalti ePayment identifiers — pidx is what we verify against on lookup.
+        khaltiPidx: { type: String, index: true },
+        khaltiTransactionId: { type: String },
         notes: { type: String },
     },
     { timestamps: true }

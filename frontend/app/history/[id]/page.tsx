@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   ClipboardList,
   Cog,
-  Flag,
   Fuel,
   MapPin,
   RotateCcw,
@@ -18,10 +17,12 @@ import {
 } from "lucide-react";
 import { handleGetBookingById } from "@/lib/actions/booking-action";
 import { handleGetVehicleById } from "@/lib/actions/vehicle-action";
+import { handleGetMyReports } from "@/lib/actions/report-action";
 import { Footer } from "../../_components/Footer";
 import { SiteNavbar } from "../../_components/SiteNavbar";
 import { Button } from "../../_components/Button";
 import { cn } from "../../_components/cn";
+import { ReportIssue } from "./_components/ReportIssue";
 import { TripRating } from "./_components/TripRating";
 
 const API_BASE =
@@ -89,8 +90,20 @@ export default async function BookingDetailPage({
   const v = b.vehicleId ?? {};
   const vehicleId = typeof v === "object" ? String(v._id ?? "") : String(v);
 
-  const vehicleRes = vehicleId ? await handleGetVehicleById(vehicleId) : null;
+  const [vehicleRes, reportsRes] = await Promise.all([
+    vehicleId ? handleGetVehicleById(vehicleId) : null,
+    handleGetMyReports(),
+  ]);
   const full = vehicleRes?.success ? vehicleRes.data : null;
+
+  // Reports are filed against the vehicle, so a prior report on this vehicle
+  // is what determines whether this booking can still be reported.
+  const myReports: any[] = reportsRes.success
+    ? reportsRes.data?.reports ?? []
+    : [];
+  const existingReport = myReports.find(
+    (r) => String(r.vehicleId?._id ?? r.vehicleId ?? "") === vehicleId
+  );
 
   const title = v.title ?? full?.title ?? "Vehicle";
   const imageUrl = resolveImage((v.images?.[0] as string) ?? full?.images?.[0]);
@@ -151,9 +164,11 @@ export default async function BookingDetailPage({
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Button href="/history" variant="outline" leftIcon={<Flag size={16} />}>
-              Report Issue
-            </Button>
+            <ReportIssue
+              vehicleId={vehicleId}
+              vehicleTitle={title}
+              alreadyReported={Boolean(existingReport)}
+            />
             <Button href={`/rentals/${vehicleId}`} leftIcon={<RotateCcw size={16} />}>
               Book Again
             </Button>

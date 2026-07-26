@@ -6,7 +6,7 @@ import { X } from "lucide-react";
 import { Button } from "../../../_components/Button";
 import { TextField } from "../../../_components/TextField";
 import { Select } from "../../../_components/Select";
-import { Modal } from "../../_components/Modal";
+import { Modal } from "../../../_components/Modal";
 import { resolveImage } from "../../_components/adminUtils";
 import {
   handleCreateVehicle,
@@ -261,7 +261,10 @@ export function VehicleFormModal({
     >
       <form id="vehicle-form" onSubmit={onSubmit} className="flex flex-col gap-4">
         {error && (
-          <p className="rounded-lg bg-[var(--color-danger-soft-bg)] px-4 py-2.5 text-sm text-[var(--color-danger-soft-text)]">
+          <p
+            role="alert"
+            className="rounded-lg bg-[var(--color-danger-soft-bg)] px-4 py-2.5 text-sm text-[var(--color-danger-soft-text)]"
+          >
             {error}
           </p>
         )}

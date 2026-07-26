@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { BadgeCheck, Cog, Fuel, Users, Zap } from "lucide-react";
 import { Badge } from "./Badge";
 import { Button } from "./Button";
@@ -24,7 +25,10 @@ export type Vehicle = {
   isElectric?: boolean;
   pricePerDay: number;
 
+  /** Details page for the vehicle — the whole card links here. */
   href?: string;
+  /** Booking flow entry point. Falls back to `href` when not supplied. */
+  bookHref?: string;
 };
 
 type VehicleCardProps = {
@@ -48,12 +52,25 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
     isElectric,
     pricePerDay,
     href,
+    bookHref,
   } = vehicle;
 
   const isAvailable = status === "available";
 
   return (
-    <Card padded={false} className={cn("flex flex-col overflow-hidden", className)}>
+    <Card
+      padded={false}
+      interactive={!!href}
+      className={cn("relative flex flex-col overflow-hidden", className)}
+    >
+      {/* Stretched link — makes the whole card navigate to the details page. */}
+      {href && (
+        <Link
+          href={href}
+          aria-label={`View details for ${name}`}
+          className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)]"
+        />
+      )}
 
       <div className="relative aspect-[16/10] w-full bg-[var(--color-surface-inset)]">
         <Image src={imageUrl} alt={name} fill className="object-cover" />
@@ -91,16 +108,7 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
         </div>
 
         <h3 className="mt-3 text-lg font-bold text-[var(--color-text)]">
-          {href ? (
-            <a
-              href={href}
-              className="text-[var(--color-text)] no-underline hover:text-[var(--color-primary)]"
-            >
-              {name}
-            </a>
-          ) : (
-            name
-          )}
+          {name}
         </h3>
 
         <div className="mt-3 flex flex-wrap gap-2">
@@ -119,14 +127,14 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
 
         <hr className="my-4 border-[var(--color-border)]" />
 
-        <div className="mt-auto flex items-center justify-between gap-3">
-          <Price amount={pricePerDay} per="day" prefix="Starting from" />
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-3">
+          <Price amount={pricePerDay} per="day" size="sm" />
           {isAvailable ? (
-            <Button href={href} size="md">
+            <Button href={bookHref ?? href} size="sm" className="relative z-20 shrink-0">
               Quick Book
             </Button>
           ) : (
-            <Button variant="ghost" size="md" disabled>
+            <Button variant="ghost" size="sm" className="relative z-20 shrink-0" disabled>
               Notify Me
             </Button>
           )}

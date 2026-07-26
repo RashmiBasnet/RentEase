@@ -59,6 +59,7 @@ function mapVehicle(v: any): ExploreVehicle {
     isElectric: v.fuelType === "electric",
     pricePerDay: v.pricePerDay,
     href: `/rentals/${id}`,
+    bookHref: `/rentals/${id}/book`,
     category: toCategory(v.type),
   };
 }

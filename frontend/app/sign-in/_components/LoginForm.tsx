@@ -52,7 +52,10 @@ export function LoginForm() {
       noValidate
     >
       {serverError && (
-        <p className="rounded-lg bg-[var(--color-danger-soft-bg)] px-4 py-2.5 text-sm text-[var(--color-danger-soft-text)]">
+        <p
+          role="alert"
+          className="rounded-lg bg-[var(--color-danger-soft-bg)] px-4 py-2.5 text-sm text-[var(--color-danger-soft-text)]"
+        >
           {serverError}
         </p>
       )}
@@ -88,7 +91,7 @@ export function LoginForm() {
         size="lg"
         fullWidth
         className="mt-1"
-        disabled={isSubmitting}
+        loading={isSubmitting}
       >
         {isSubmitting ? "Signing in..." : "Login"}
       </Button>

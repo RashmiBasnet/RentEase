@@ -23,6 +23,16 @@ export class ReportService {
             throw new HttpError(404, "Vehicle not found");
         }
 
+        // A unique (reportedBy, vehicleId) index backs this — check first so the
+        // caller gets a clear message instead of a raw duplicate key error.
+        const alreadyReported = await reportRepository.hasReported(
+            userId,
+            String(data.vehicleId)
+        );
+        if (alreadyReported) {
+            throw new HttpError(409, "You have already reported this vehicle");
+        }
+
         const report = await reportRepository.createReport({
             reportedBy: new Types.ObjectId(userId),
             vehicleId: new Types.ObjectId(String(data.vehicleId)),

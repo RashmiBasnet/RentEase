@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import path from "path";
 import authRoutes from "./routes/auth.routes";
 import bookingRoutes from "./routes/booking.routes";
+import paymentRoutes from "./routes/payment.routes";
 import reportRoutes from "./routes/report.routes";
 import reviewRoutes from "./routes/review.routes";
 import userRoutes from "./routes/user.routes";
@@ -45,6 +46,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/payments", paymentRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/reports", reportRoutes);
 

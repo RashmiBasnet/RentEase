@@ -20,6 +20,7 @@ export interface IReportRepository {
         vehicleId,
     }: ReportListFilters): Promise<{ reports: IReport[]; total: number }>;
     getReportById(id: string): Promise<IReport | null>;
+    hasReported(userId: string, vehicleId: string): Promise<boolean>;
     updateReport(id: string, data: Partial<IReport>): Promise<IReport | null>;
     deleteReport(id: string): Promise<IReport | null>;
 }
@@ -28,6 +29,14 @@ export class ReportRepository implements IReportRepository {
     async createReport(data: Partial<IReport>): Promise<IReport> {
         const report = await ReportModel.create(data);
         return report;
+    }
+
+    async hasReported(userId: string, vehicleId: string): Promise<boolean> {
+        const count = await ReportModel.countDocuments({
+            reportedBy: userId,
+            vehicleId,
+        });
+        return count > 0;
     }
 
     async getAllReports({
