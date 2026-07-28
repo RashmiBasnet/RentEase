@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, useTransition } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import {
@@ -22,6 +22,7 @@ import {
   handleUpdateProfile,
   handleUpdateProfilePicture,
 } from "@/lib/actions/user-action";
+import { isValidNepaliPhone, normalizePhone } from "@/lib/phone";
 
 type Profile = {
   fullName?: string;
@@ -53,6 +54,23 @@ export function ProfileView({ profile }: { profile: Profile }) {
 
   const initial = (profile.fullName ?? "U").charAt(0).toUpperCase();
 
+  // Profile-completion nudge (Zeigarnik) — reflects unsaved edits live so the
+  // bar moves as fields are filled in.
+  const completion = useMemo(() => {
+    const checks = [
+      { label: "your full name", done: fullName.trim().length > 0 },
+      { label: "your email", done: email.trim().length > 0 },
+      { label: "your phone number", done: isValidNepaliPhone(phoneNumber) },
+      { label: "a profile photo", done: Boolean(profile.avatarUrl) },
+      { label: "account verification", done: Boolean(profile.isVerified) },
+    ];
+    const done = checks.filter((c) => c.done).length;
+    return {
+      pct: Math.round((done / checks.length) * 100),
+      nextMissing: checks.find((c) => !c.done)?.label,
+    };
+  }, [fullName, email, phoneNumber, profile.avatarUrl, profile.isVerified]);
+
   const onPickPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -74,11 +92,15 @@ export function ProfileView({ profile }: { profile: Profile }) {
       toast.error("Full name is required");
       return;
     }
+    if (phoneNumber.trim() && !isValidNepaliPhone(phoneNumber)) {
+      toast.error("Enter a valid 10-digit phone number");
+      return;
+    }
     setSaving(true);
     const payload: Record<string, string> = {
       fullName: fullName.trim(),
       email: email.trim(),
-      phoneNumber: phoneNumber.trim(),
+      phoneNumber: phoneNumber.trim() ? normalizePhone(phoneNumber) : "",
     };
     if (password.trim()) payload.password = password.trim();
 
@@ -128,7 +150,43 @@ export function ProfileView({ profile }: { profile: Profile }) {
         </p>
       </header>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[20rem_1fr]">
+      <div className="mt-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-sm)]">
+        <div className="flex items-center justify-between gap-3">
+          <p className="flex items-center gap-2 text-sm font-bold text-[var(--color-text)]">
+            {completion.pct === 100 ? (
+              <BadgeCheck size={17} className="text-[var(--color-success)]" />
+            ) : (
+              <UserIcon size={17} className="text-[var(--color-primary)]" />
+            )}
+            {completion.pct === 100
+              ? "Your profile is complete"
+              : "Complete your profile"}
+          </p>
+          <span className="text-sm font-bold text-[var(--color-primary)]">
+            {completion.pct}%
+          </span>
+        </div>
+        <div
+          role="progressbar"
+          aria-valuenow={completion.pct}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Profile completion"
+          className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[var(--color-surface-inset)]"
+        >
+          <div
+            className="h-full rounded-full bg-[var(--color-primary)] transition-all duration-500 motion-reduce:transition-none"
+            style={{ width: `${completion.pct}%` }}
+          />
+        </div>
+        {completion.pct < 100 && completion.nextMissing && (
+          <p className="mt-2 text-xs text-[var(--color-text-secondary)]">
+            Add {completion.nextMissing} to finish setting up your account.
+          </p>
+        )}
+      </div>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-[20rem_1fr]">
         {/* Identity card */}
         <aside className="h-fit rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 text-center shadow-[var(--shadow-sm)]">
           <div className="relative mx-auto h-28 w-28">

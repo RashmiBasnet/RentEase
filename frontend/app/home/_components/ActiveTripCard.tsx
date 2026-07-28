@@ -64,7 +64,7 @@ export function ActiveTripCard({
         </div>
 
         <Button
-          href={`/bookings/${bookingId}`}
+          href={`/history/${bookingId}`}
           size="md"
           className="w-fit"
           leftIcon={<Settings size={16} />}

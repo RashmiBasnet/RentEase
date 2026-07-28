@@ -21,6 +21,7 @@ import { Button } from "../../../../_components/Button";
 import { Input } from "../../../../_components/Input";
 import { SpecChip } from "../../../../_components/SpecChip";
 import { Stepper } from "../../../../_components/Stepper";
+import { isValidNepaliPhone, normalizePhone } from "@/lib/phone";
 
 export type BookingVehicle = {
   id: string;
@@ -44,7 +45,22 @@ type Driver = {
 type BookingDetailsProps = {
   vehicle: BookingVehicle;
   driver: Driver;
+  /** Dates/pickup already entered on the vehicle page, carried over so they
+   *  aren't asked for a second time. */
+  initial?: { start?: string; end?: string; pickup?: string };
 };
+
+/** Now, in the `datetime-local` format (YYYY-MM-DDTHH:mm), for min bounds. */
+const nowLocal = () => {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 16);
+};
+
+/** A date-only value (YYYY-MM-DD) carried from the vehicle page gets a default
+ *  pickup time so it populates the datetime-local inputs. */
+const toLocalDateTime = (value?: string) =>
+  value ? (value.includes("T") ? value : `${value}T10:00`) : "";
 
 /** Where "save my details for future bookings" persists — the API has no driver profile yet. */
 const DRIVER_STORAGE_KEY = "rentease:driver-details";
@@ -59,13 +75,13 @@ const dayCount = (start: string, end: string) => {
   return diff > 0 ? diff : 0;
 };
 
-export function BookingDetails({ vehicle, driver }: BookingDetailsProps) {
+export function BookingDetails({ vehicle, driver, initial }: BookingDetailsProps) {
   const router = useRouter();
 
-  const [pickup, setPickup] = useState("");
+  const [pickup, setPickup] = useState(initial?.pickup ?? "");
   const [dropoff, setDropoff] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(toLocalDateTime(initial?.start));
+  const [endDate, setEndDate] = useState(toLocalDateTime(initial?.end));
 
   const [fullName, setFullName] = useState(driver.fullName);
   const [email, setEmail] = useState(driver.email);
@@ -109,8 +125,8 @@ export function BookingDetails({ vehicle, driver }: BookingDetailsProps) {
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
       next.email = "Enter a valid email address.";
     }
-    if (!/^\d{10}$/.test(phone.replace(/\s/g, ""))) {
-      next.phone = "Enter a 10-digit phone number.";
+    if (!isValidNepaliPhone(phone)) {
+      next.phone = "Enter a valid 10-digit phone number.";
     }
 
     setErrors(next);
@@ -142,7 +158,7 @@ export function BookingDetails({ vehicle, driver }: BookingDetailsProps) {
     // details ride along in notes until the backend has fields for them.
     const notes = [
       `Drop-off: ${dropoff.trim()}`,
-      `Driver: ${fullName.trim()} · ${email.trim()} · +977 ${phone.trim()}`,
+      `Driver: ${fullName.trim()} · ${email.trim()} · +977 ${normalizePhone(phone)}`,
     ].join("\n");
 
     const query = new URLSearchParams({
@@ -192,6 +208,7 @@ export function BookingDetails({ vehicle, driver }: BookingDetailsProps) {
                 type="datetime-local"
                 label="Pickup Date & Time"
                 leftIcon={<CalendarClock size={18} />}
+                min={nowLocal()}
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 error={errors.startDate}
@@ -201,7 +218,7 @@ export function BookingDetails({ vehicle, driver }: BookingDetailsProps) {
                 type="datetime-local"
                 label="Return Date & Time"
                 leftIcon={<CalendarCheck size={18} />}
-                min={startDate || undefined}
+                min={startDate || nowLocal()}
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 error={errors.endDate}

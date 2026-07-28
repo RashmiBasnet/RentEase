@@ -138,13 +138,13 @@ export function BookingHistoryCard({ booking }: { booking: HistoryBooking }) {
             <>
               <Button
                 href={`/history/${booking.id}`}
-                variant="outline"
                 size="sm"
                 fullWidth
               >
                 View Details
               </Button>
               <Button
+                variant="danger"
                 size="sm"
                 fullWidth
                 onClick={onCancel}

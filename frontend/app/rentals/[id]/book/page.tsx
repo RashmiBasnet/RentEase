@@ -23,10 +23,14 @@ const capitalize = (s?: string) =>
 
 export default async function BookingDetailsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
+  const sp = await searchParams;
+  const pick = (key: string) => (typeof sp[key] === "string" ? sp[key] : undefined);
 
   const [user, vehicleRes] = await Promise.all([
     getUserData(),
@@ -71,6 +75,11 @@ export default async function BookingDetailsPage({
               fullName: user?.fullName ?? "",
               email: user?.email ?? "",
               phone: user?.phone ?? "",
+            }}
+            initial={{
+              start: pick("start"),
+              end: pick("end"),
+              pickup: pick("pickup"),
             }}
           />
         </div>

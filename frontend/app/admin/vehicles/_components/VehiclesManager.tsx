@@ -26,7 +26,7 @@ import {
 import { VehicleFormModal } from "./VehicleFormModal";
 
 const iconBtn =
-  "inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-border)] text-[var(--color-text-secondary)] transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--color-border)] text-[var(--color-text-secondary)] transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50";
 
 export function VehiclesManager({ vehicles }: { vehicles: any[] }) {
   const router = useRouter();
@@ -199,6 +199,10 @@ export function VehiclesManager({ vehicles }: { vehicles: any[] }) {
                         >
                           <Pencil size={15} />
                         </button>
+                        <span
+                          className="mx-0.5 h-5 w-px shrink-0 bg-[var(--color-border)]"
+                          aria-hidden
+                        />
                         <button
                           type="button"
                           title="Delete"

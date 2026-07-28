@@ -146,7 +146,7 @@ export function BookingsManager({ bookings }: { bookings: any[] }) {
                               disabled={busy}
                               onClick={() => updateStatus(id, t)}
                               className={cn(
-                                "rounded-lg px-3 py-1.5 text-xs font-semibold capitalize transition-colors disabled:opacity-50",
+                                "rounded-lg px-3.5 py-2 text-xs font-semibold capitalize transition-colors disabled:opacity-50",
                                 t === "cancelled"
                                   ? "bg-[var(--color-danger-soft-bg)] text-[var(--color-danger-soft-text)] hover:bg-[var(--color-danger)] hover:text-white"
                                   : "bg-[var(--color-primary-50)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-on-primary)]"

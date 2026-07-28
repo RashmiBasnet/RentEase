@@ -17,7 +17,7 @@ type BookingPanelProps = {
 const todayStr = () => new Date().toISOString().split("T")[0];
 
 const inputClass =
-  "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] focus:shadow-[var(--shadow-focus)]";
+  "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] focus:shadow-[var(--shadow-focus)]";
 
 export function BookingPanel({
   vehicleId,
@@ -30,7 +30,6 @@ export function BookingPanel({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [pickup, setPickup] = useState(pickupAddress);
-  const [notes, setNotes] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const days = useMemo(() => {
@@ -61,14 +60,15 @@ export function BookingPanel({
       return;
     }
 
+    // Carry the dates + pickup already entered here into the booking-details
+    // step so they aren't asked for again (one flow, no duplicate entry).
     const query = new URLSearchParams({
       start: startDate,
       end: endDate,
       pickup: pickup.trim(),
     });
-    if (notes.trim()) query.set("notes", notes.trim());
 
-    router.push(`/rentals/${vehicleId}/checkout?${query.toString()}`);
+    router.push(`/rentals/${vehicleId}/book?${query.toString()}`);
   };
 
   return (
@@ -131,17 +131,6 @@ export function BookingPanel({
           </span>
         </label>
 
-        <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--color-text-secondary)]">
-          Notes <span className="font-normal text-[var(--color-text-muted)]">(optional)</span>
-          <input
-            type="text"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Anything we should know?"
-            className={inputClass}
-          />
-        </label>
-
         {days > 0 && (
           <div className="flex flex-col gap-2 border-t border-[var(--color-border)] pt-4 text-sm">
             <div className="flex justify-between text-[var(--color-text-secondary)]">
@@ -174,10 +163,10 @@ export function BookingPanel({
           fullWidth
           leftIcon={<CalendarCheck size={18} />}
         >
-          Continue to Payment
+          Continue to Booking
         </Button>
         <p className="text-center text-xs text-[var(--color-text-muted)]">
-          You won't be charged yet — review payment on the next step.
+          You won&apos;t be charged yet — add your details on the next step.
         </p>
       </form>
     </div>

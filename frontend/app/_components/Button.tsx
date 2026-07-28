@@ -8,7 +8,7 @@ import type {
 } from "react";
 import { cn } from "./cn";
 
-type Variant = "primary" | "outline" | "ghost";
+type Variant = "primary" | "outline" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
 
 const base =
@@ -21,6 +21,8 @@ const variantClasses: Record<Variant, string> = {
     "border-[1.5px] border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary-50)]",
   ghost:
     "bg-[var(--color-surface-inset)] text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-50)] hover:text-[var(--color-primary)]",
+  danger:
+    "bg-[var(--color-danger-soft-bg)] text-[var(--color-danger-soft-text)] hover:bg-[var(--color-danger)] hover:text-white",
 };
 
 const sizeClasses: Record<Size, string> = {

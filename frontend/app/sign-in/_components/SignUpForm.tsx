@@ -10,6 +10,7 @@ import { Button } from "@/app/_components/Button";
 import { TextField } from "@/app/_components/TextField";
 import { PasswordField } from "@/app/_components/PasswordField";
 import { handleRegister } from "@/lib/actions/auth-action";
+import { isValidNepaliPhone, normalizePhone } from "@/lib/phone";
 
 const signUpSchema = z
   .object({
@@ -17,7 +18,8 @@ const signUpSchema = z
     phoneNumber: z
       .string()
       .trim()
-      .regex(/^\d{10}$/, "Phone number must be 10 digits"),
+      .refine(isValidNepaliPhone, "Enter a valid 10-digit phone number")
+      .transform(normalizePhone),
     email: z.email("Enter a valid email"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
