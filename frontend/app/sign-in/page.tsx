@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { ArrowLeft, ShieldCheck, Star, StarHalf } from "lucide-react";
 import { LoginForm } from "./_components/LoginForm";
 import { SignUpForm } from "./_components/SignUpForm";
+import { GoogleAuthError } from "./_components/GoogleAuthError";
+import { GoogleButton } from "@/app/_components/GoogleButton";
 
 const travelers = [
   { name: "A", tone: "from-[#0f766e] to-[#39c6a2]" },
@@ -21,6 +23,10 @@ export default function SignInPage() {
 
   return (
     <main className="grid min-h-screen bg-[var(--color-surface-muted)] lg:grid-cols-[55%_45%]">
+      <Suspense fallback={null}>
+        <GoogleAuthError />
+      </Suspense>
+
       {/* Brand / hero panel */}
       <section className="relative isolate min-h-[420px] overflow-hidden bg-slate-950 text-white lg:min-h-screen">
         <Image
@@ -119,6 +125,20 @@ export default function SignInPage() {
           ) : (
             <SignUpForm onSuccess={() => setTab("login")} />
           )}
+
+          {/* Divider */}
+          <div className="mt-6 flex items-center gap-4">
+            <hr className="flex-1 border-[var(--color-border)]" />
+            <span className="text-xs font-medium text-[var(--color-text-muted)]">
+              or continue with
+            </span>
+            <hr className="flex-1 border-[var(--color-border)]" />
+          </div>
+
+          {/* Social sign-in */}
+          <div className="mt-6">
+            <GoogleButton />
+          </div>
 
           {/* Footer */}
           <div className="mt-8">

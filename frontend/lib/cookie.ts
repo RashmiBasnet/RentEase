@@ -32,3 +32,30 @@ export const clearAuthCookies = async () => {
     cookieStore.delete("auth_token");
     cookieStore.delete("user_data");
 };
+
+// Short-lived CSRF token for the Google OAuth round-trip. Set before redirecting to
+// Google, then compared against the `state` Google echoes back on the callback.
+const OAUTH_STATE_MAX_AGE = 10 * 60;
+
+export const setOAuthState = async (state: string) => {
+    const cookieStore = await cookies();
+    cookieStore.set({
+        name: "g_oauth_state",
+        value: state,
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: OAUTH_STATE_MAX_AGE,
+    });
+};
+
+export const getOAuthState = async () => {
+    const cookieStore = await cookies();
+    return cookieStore.get("g_oauth_state")?.value || null;
+};
+
+export const clearOAuthState = async () => {
+    const cookieStore = await cookies();
+    cookieStore.delete("g_oauth_state");
+};

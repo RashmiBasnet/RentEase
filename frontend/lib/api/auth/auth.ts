@@ -46,6 +46,32 @@ export const login = async (data: LoginPayload) => {
     }
 }
 
+export const startGoogleLogin = async (state: string) => {
+    try {
+        const response = await axios.get(API.AUTH.GOOGLE_START(state));
+        return response.data; // { data: { url } }
+    } catch (err: Error | any) {
+        throw new Error(
+            err.response?.data?.message
+            || err.message
+            || "Could not start Google sign-in"
+        );
+    }
+}
+
+export const completeGoogleLogin = async (code: string) => {
+    try {
+        const response = await axios.post(API.AUTH.GOOGLE_CALLBACK, { code });
+        return response.data; // { data: { token, user } }
+    } catch (err: Error | any) {
+        throw new Error(
+            err.response?.data?.message
+            || err.message
+            || "Google sign-in failed"
+        );
+    }
+}
+
 export const forgotPassword = async (email: string) => {
     try {
         const response = await axios.post(

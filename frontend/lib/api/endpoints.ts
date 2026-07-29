@@ -2,6 +2,9 @@ export const API = {
     AUTH: {
         REGISTER: "/api/auth/register",
         LOGIN: "/api/auth/login",
+        GOOGLE_START: (state: string) =>
+            `/api/auth/google/start?state=${encodeURIComponent(state)}`,
+        GOOGLE_CALLBACK: "/api/auth/google/callback",
         FORGOT_PASSWORD: "/api/auth/forgot-password",
         RESET_PASSWORD: (token: string) => `/api/auth/reset-password/${token}`,
     },

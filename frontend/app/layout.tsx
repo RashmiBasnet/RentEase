@@ -3,6 +3,7 @@ import { Sora, Inter } from "next/font/google";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import { ThemedToast } from "./_components/ThemedToast";
+import { WelcomeToast } from "./_components/WelcomeToast";
 
 const sora = Sora({
   variable: "--font-display",
@@ -43,6 +44,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         {children}
+        <WelcomeToast />
         <ThemedToast />
       </body>
     </html>

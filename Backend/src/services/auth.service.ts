@@ -5,10 +5,22 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config";
 import { sendEmail } from "../config/email";
+import { IUser } from "../models/user.model";
+import type { GoogleIdentity } from "./google.service";
 
 const CLIENT_URL = process.env.CLIENT_URL as string;
 
 let userRepository = new UserRepository();
+
+function signAuthToken(user: IUser): string {
+    const payload = {
+        id: user._id,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        role: user.role,
+    };
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
+}
 
 export class AuthService {
     async registerUser(data: CreateUserDto) {
@@ -33,18 +45,54 @@ export class AuthService {
         if (!user) {
             throw new HttpError(404, "User not found");
         }
+        // Accounts created through Google have no password set — steer them to Google.
+        if (!user.password) {
+            throw new HttpError(401, "This account uses Google sign-in. Please continue with Google.");
+        }
         const isPasswordValid = await bcryptjs.compare(data.password, user.password);
         if (!isPasswordValid) {
             throw new HttpError(401, "Invalid credentials");
         }
-        const payload = {
-            id: user._id,
-            email: user.email,
-            phoneNumber: user.phoneNumber,
-            role: user.role,
-        };
-        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
+        const token = signAuthToken(user);
         return { token, user };
+    }
+
+    async loginWithGoogle(identity: GoogleIdentity) {
+        // 1. Returning Google user — matched by their stable Google id.
+        const byGoogleId = await userRepository.getUserByGoogleId(identity.googleId);
+        if (byGoogleId) {
+            return { token: signAuthToken(byGoogleId), user: byGoogleId, created: false };
+        }
+
+        // 2. Existing email/password account — link Google to it so both work.
+        //    Only link when Google has verified the address, otherwise someone could
+        //    claim an account by signing up to Google with an email they don't own.
+        const byEmail = await userRepository.getUserByEmail(identity.email);
+        if (byEmail) {
+            if (!identity.emailVerified) {
+                throw new HttpError(
+                    403,
+                    "Your Google account has not verified this email address, so it cannot be linked to an existing RentEase account."
+                );
+            }
+            const linked = await userRepository.linkGoogleId(String(byEmail._id), identity.googleId);
+            const user = linked ?? byEmail;
+            return { token: signAuthToken(user), user, created: false };
+        }
+
+        // 3. Brand-new user — create a passwordless account from the Google profile.
+        if (!identity.emailVerified) {
+            throw new HttpError(
+                403,
+                "Your Google account has not verified this email address, so it cannot be used to sign in."
+            );
+        }
+        const created = await userRepository.createUser({
+            fullName: identity.name,
+            email: identity.email,
+            googleId: identity.googleId,
+        });
+        return { token: signAuthToken(created), user: created, created: true };
     }
 
     async sendResetPasswordEmail(email?: string) {

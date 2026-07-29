@@ -9,6 +9,8 @@ export interface IUserRepository {
     deleteOneUser(id: string): Promise<boolean | null>;
     getUserByEmail(email: string): Promise<IUser | null>;
     getUserByPhoneNumber(phoneNumber: string): Promise<IUser | null>;
+    getUserByGoogleId(googleId: string): Promise<IUser | null>;
+    linkGoogleId(id: string, googleId: string): Promise<IUser | null>;
     uploadProfilePicture(id: string, profilePicture: string): Promise<IUser | null>;
     updateUserLocation(userId: string, lng: number, lat: number): Promise<IUser | null>;
 }
@@ -56,6 +58,14 @@ export class UserRepository implements IUserRepository {
 
     async getUserByPhoneNumber(phoneNumber: string): Promise<IUser | null> {
         return await UserModel.findOne({ phoneNumber });
+    }
+
+    async getUserByGoogleId(googleId: string): Promise<IUser | null> {
+        return await UserModel.findOne({ googleId });
+    }
+
+    async linkGoogleId(id: string, googleId: string): Promise<IUser | null> {
+        return await UserModel.findByIdAndUpdate(id, { googleId }, { new: true });
     }
 
     async uploadProfilePicture(id: string, profilePicture: string): Promise<IUser | null> {

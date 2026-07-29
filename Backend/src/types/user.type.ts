@@ -10,6 +10,7 @@ export const UserSchema = z.object({
     email: z.email(),
     password: z.string().trim().min(6, "Password can't be less than 6 characters"),
     phoneNumber: z.string().trim().length(10, "Phone number must be 10 digits"),
+    googleId: z.string().optional(),
     role: z.enum(["admin", "user"]).default("user"),
     profilePicture: z.string().optional(),
     isVerified: z.boolean().default(false),
